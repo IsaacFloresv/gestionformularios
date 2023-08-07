@@ -1,0 +1,64 @@
+{
+  "name": "gestionformularios",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hcaptcha/react-hcaptcha": "^1.8.1",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
+    "@testing-library/user-event": "^14.4.3",
+    "axios": "^1.4.0",
+    "bootstrap": "^5.3.1",
+    "chart.js": "^4.3.3",
+    "cookie-parser": "^1.4.6",
+    "fbjs": "^3.0.5",
+    "jquery.maskedinput": "^1.4.1",
+    "jsonwebtoken": "^9.0.1",
+    "md5": "^2.3.0",
+    "moment": "^2.29.4",
+    "node": "^20.5.0",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.8.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.14.2",
+    "react-scripts": "^5.0.1",
+    "react-select": "^5.7.4",
+    "request": "^2.88.2",
+    "sweetalert2": "^11.7.20",
+    "universal-cookie": "^4.0.4",
+    "web-vitals": "^3.4.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "envify": "^4.1.0",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "terser": "^5.19.2",
+    "uglifyify": "^5.0.2"
+  },
+  "browser": {
+    "crypto": false,
+    "stream": false
+  }
+}
