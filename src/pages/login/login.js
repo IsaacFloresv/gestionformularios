@@ -58,16 +58,11 @@ function Login() {
             navigate('/home')
             //window.location = '/formpres'
           }else{
-            // Get the current page title
-            let title = document.title;
-            // Create the alert message
-            let message = `${title}: El usuario y/o la contraseña no son correctos`;
-            // Show the alert message
-            alert(message);
+            alert('El usuario y/o la contraseña no son correctos')
           }
        }catch(error){
         console.log(error)
-        alert('El usuario y/o la contraseña no son correctos');
+        alert('El usuario y/o la contraseña no son correctos')
        }
        
       
