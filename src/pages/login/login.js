@@ -50,20 +50,20 @@ function Login() {
        }
        
        try{
-        let response = await axios.request(reqOptions)
-          if(response.statusText != "Forbidden" ){
-            const {resp, Agente} = response.data
-            cookies.set('token', resp)
-            cookies.set('info', Agente)
-            navigate('/home')
-            //window.location = '/formpres'
-          }else{
-            alert('El usuario y/o la contraseña no son correctos')
-          }
-       }catch(error){
-        console.log(error)
-        alert('El usuario y/o la contraseña no son correctos')
-       }
+    let response = await axios.request(reqOptions)
+    if(response.statusText != "Forbidden" ){
+        const {resp, Agente} = response.data
+        cookies.set('token', resp)
+        cookies.set('info', Agente)
+        navigate('/home')
+        //window.location = '/formpres'
+    }else{
+        alert(`${window.location.hostname}: El usuario y/o la contraseña no son correctos`)
+    }
+}catch(error){
+    console.log(error)
+    alert('El usuario y/o la contraseña no son correctos')
+}
        
       
     }
