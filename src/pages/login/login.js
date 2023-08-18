@@ -49,7 +49,7 @@ function Login() {
          data: bodyContent,
        }
        
-       try{
+      try{
         let response = await axios.request(reqOptions)
           if(response.statusText != "Forbidden" ){
             const {resp, Agente} = response.data
@@ -58,11 +58,16 @@ function Login() {
             navigate('/home')
             //window.location = '/formpres'
           }else{
-            alert('El usuario y/o la contraseña no son correctos')
+            // Get the current page title
+            let title = document.title;
+            // Create the alert message
+            let message = `${title}: El usuario y/o la contraseña no son correctos`;
+            // Show the alert message
+            alert(message);
           }
        }catch(error){
         console.log(error)
-        alert('El usuario y/o la contraseña no son correctos')
+        alert('El usuario y/o la contraseña no son correctos');
        }
        
       
