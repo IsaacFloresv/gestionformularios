@@ -778,8 +778,7 @@ const CompFormpres = () => {
       if (lblinputName === "Nombre") {
         const Ced = ced === 1 ? ndiA : ced;
         setnombA(valor);
-  
-        if (valor.toString().length >= 1) {
+        if (valor?.toString().length >= 1) {
           let resp;
           if (ced === 1) {
             resp = validarText(valor);
@@ -793,7 +792,23 @@ const CompFormpres = () => {
   
           if (resp) {
             setnClValid("is-valid");
-          } else {
+          } else if(valor?.toString().length >= 1){
+            const resp = validarText(valor);
+            if (ced === 1) {
+              resp = validarText(valor);
+            } else if (Ced.toString().length === 9) {
+              resp = validarText(valor);
+            } else if (Ced.toString().length === 10) {
+              resp = validarTextEsp(valor);
+            } else if (Ced.toString().length === 12 || selectNidA === 4) {
+              resp = validarText(valor);
+            }
+            if (resp) {
+              setnClValid("is-valid");
+            } else {
+              setnClValid("is-invalid");
+            }
+          }else {
             setnClValid("is-invalid");
           }
         } else {
@@ -805,7 +820,7 @@ const CompFormpres = () => {
       ) {
         const Ced = ced === 1 ? ndiA : ced;
   
-        if (valor.toString().length >= 1) {
+        if (valor?.toString().length >= 1) {
           let resp;
           if (Ced.toString().length === 10) {
             resp = validarTextEsp(valor);
@@ -821,7 +836,7 @@ const CompFormpres = () => {
         }
       }
     } catch (error) {
-      // Manejar la excepción aquí
+      // Se muestra el error en consola
       console.error("Error en ValidarinputNomb:", error);
       setnClValid("is-invalid");
     }
@@ -832,7 +847,7 @@ const CompFormpres = () => {
       const valor = val;
       setapell1A(valor);
       if (lblapell1A !== "Nombre de Fantasía (Opcional)") {
-        if (val.toString().length >= 1) {
+        if (val?.toString().length >= 1) {
           const resp = validarText(valor);
           if (resp) {
             setpaClValid("is-valid");
@@ -844,9 +859,8 @@ const CompFormpres = () => {
         }
       }
     } catch (error) {
-      // Maneja la excepción aquí
+      // Se muestra el error en consola
       console.error("Error:", error);
-      // Puedes hacer algo como mostrar un mensaje de error o realizar otra acción necesaria.
     }
   };
   
@@ -856,7 +870,7 @@ const CompFormpres = () => {
       const valor = val;
       setapell2A(valor);
       if (lblapell1A != "Nombre de Fantasía (Opcional)") {
-        if (val.toString().length >= 1) {
+        if (val?.toString().length >= 1) {
           const resp = validarText(valor.trimEnd());
           if (resp) {
             setsaClValid("is-valid");
@@ -868,9 +882,8 @@ const CompFormpres = () => {
         }
       }
     } catch (error) {
-      // Aquí puedes manejar la excepción, por ejemplo, imprimir un mensaje de error
+      // Se muestra el error en consola
       console.error("Ha ocurrido un error:", error);
-      // También puedes realizar otras acciones de manejo de errores según tus necesidades.
     }
   };
   
@@ -882,7 +895,7 @@ const CompFormpres = () => {
         const Ced = ced === 2 ? ndiA : ced;
         setnombC(valor);
         setRsocial(valor);
-        if (valor.toString().length >= 1) {
+        if (valor?.toString().length >= 1) {
           if (ced === 2) {
             const resp = validarText(valor);
             if (resp) {
@@ -922,8 +935,16 @@ const CompFormpres = () => {
         const valor = val;
         const Ced = ced === 2 ? ndiC : ced;
         setnombC(valor);
-        if (valor.toString().length >= 0) {
+        if (valor?.toString().length >= 0) {
           if (Ced.toString().length == 10) {
+            const resp = validarTextEsp(valor);
+            if (resp) {
+              setnClValidC("is-valid");
+            } else {
+              setnClValidC("is-invalid");
+            }
+          }
+          else if(valor.toString().length >= 1) {
             const resp = validarTextEsp(valor);
             if (resp) {
               setnClValidC("is-valid");
@@ -950,7 +971,7 @@ const CompFormpres = () => {
         }
       }
     } catch (error) {
-      // Manejar la excepción aquí, por ejemplo, puedes imprimir un mensaje de error o realizar alguna otra acción.
+      // // Se muestra el error en consola
       console.error("Error en ValidarinputNombC:", error);
     }
   };
@@ -975,7 +996,7 @@ const CompFormpres = () => {
       }
     } catch (error) {
       console.error("Se produjo un error:", error);
-      // Puedes manejar el error aquí de la manera que desees
+      // Se muestra el error en consola
     }
   };
   
@@ -996,9 +1017,8 @@ const CompFormpres = () => {
         setsaClValidC("is-invalid");
       }
     } catch (error) {
-      // Manejar la excepción aquí
+      // Se muestra el error en consola
       console.error("Ocurrió un error:", error);
-      // Puedes tomar acciones adicionales aquí si es necesario
     }
   };
   
