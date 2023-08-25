@@ -289,6 +289,8 @@ const CompFormpres = () => {
   const [ checkem2, setCheckEm2 ] = useState(true);
   const [ checktel1, setCheckTel1 ] = useState(false);
   const [ checkem1, setCheckEm1 ] = useState(false);
+  const [showCompanyName, setShowCompanyName] = useState(true);
+  const MIN_LENGTH_FOR_VALID_NAME = 10
 
 
   //useState para guardar datos de ubicacion
@@ -1329,6 +1331,10 @@ const CompFormpres = () => {
         const Comer = data[ 0 ];
         setComer(Comer);
         console.log(Comer)
+        if (!Comer) {
+          setShowCompanyName(false);
+          return;
+        }  
         if (ub == 1 && selectNidA == 3) {
           if (
             Comer?.fantasy_name == "NULL" ||
@@ -1359,7 +1365,7 @@ const CompFormpres = () => {
               Comer?.fantasy_name == null ||
               Comer?.fantasy_name == "NA" ||
               Comer?.fantasy_name == "N/A") &&
-            Comer?.business_name == null
+              Comer?.business_name == null
           ) {
             const nombreE = Comer?.business_name;
             const nombreF = Comer?.fantasy_name;
