@@ -483,6 +483,11 @@ function Dashboard() {
     endDateFilter,
   ]);
 
+  const resetDates = () => {
+    setStartDateFilter(null);
+    setEndDateFilter(null);
+  };
+
   return (
     <>
       <nav className="navbar bg-body-white fixed-top position-relative shadow">
@@ -561,7 +566,7 @@ function Dashboard() {
           >
             Exportar datos a Excel
           </button>
-          <div className="datepicker">
+          <div className=" d-flex flex-row mb-0 ms-2 datepicker">
           <DatePicker.default
             selected={startDateFilter}
             onChange={handleStartDateChange}
@@ -583,7 +588,7 @@ function Dashboard() {
           </div>
           
 
-          <button onClick={handleFiltrarClick} className="btn btn-primary">Filtrar</button>
+          <button className="btn btn-success" onClick={resetDates}>Reiniciar</button>
           <button className="d-none btn btn-success me-1">Exportar datos a PDF</button>
           <button className="d-none btn btn-success">Exportar datos a CSV </button>
       </div>
