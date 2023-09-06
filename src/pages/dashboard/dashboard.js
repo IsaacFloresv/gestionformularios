@@ -5,8 +5,11 @@ import Cookies from 'universal-cookie'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { startOfDay, endOfDay } from 'date-fns';
+//import ExcelJS from 'exceljs';
+import * as XLSX from "xlsx";
+import './dashboard.css';
 
-import ReactHTMLTableToExcel from './ReactHTMLTableToExcel.jsx'
+//import ReactHTMLTableToExcel from './ReactHTMLTableToExcel.jsx'
 
 
 
@@ -55,32 +58,36 @@ function Dashboard() {
   const [filtroRespe, setFiltroRespe] = useState("");
   const [startDateFilter, setStartDateFilter] = useState(null);
   const [endDateFilter, setEndDateFilter] = useState(null);
-
-
-
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ numPaginas, setNumPaginas ] = useState(0);
+  
+  
 
   const [ dreportes, setDReportes ] = useState([])
   const [ freportes, setFReportes ] = useState([])
   const [ reportes, setReportes ] = useState([])
+  const [ allreportes, setAllReportes ] = useState([])
+  const itemsPerPage = 50;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const maxPagesToShow = 10; // Número máximo de páginas a mostrar a la vez
+  const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  const endPage = Math.min(numPaginas, startPage + maxPagesToShow - 1);
 
-  useEffect(() => {
-    getReportes()
-  }, [])
-
-  useEffect(() => {
-
-      buscarReportes();
-
-  }, [filtroNReport, filtroAgent, filtroFchCreado, filtroStatus, filtroOrigen, 
-    filtroUsuario_s, filtroUs_obser, filtroTdia, filtroNdia, filtroNomba, 
-    filtroApell1a, filtroApell2a, filtroEmail, filtroEmail2, filtroTel, filtroTel2,
-    filtroProvi, filtroCanto, filtroDistr, filtroMateria, filtroAsunto, filtroBien,
-    filtroTdic, filtroNdic, filtroRsocial, filtroFantasia, filtroDesch, filtroRespe]);
-
+  const getReportes = async () => {
+    const res = await axios.get(URI)
+    const report = res.data
+    const numPaginas = Math.ceil(report.length / itemsPerPage);
+    setNumPaginas(numPaginas);
+    setReportes(report.slice(startIndex, endIndex))
+    setDReportes(report);
+    setFReportes(report);
+    setAllReportes(report);
+  }
 
   // Función de búsqueda que combina los filtros
   const buscarReportes = () => {
+    // Obtener los datos de la base de datos
     const filt = dreportes.filter((reporte) => {
       const [fechaPart, horaPart] = reporte.fchareg.split(', ');
   
@@ -95,179 +102,386 @@ function Dashboard() {
         // Crear un objeto Date con los valores extraídos
         const reportDate = new Date(ano, mes - 1, dia, horas, minutos, segundos);
   
-      return(
-      reporte.id_report.toString().includes(filtroNReport) &&
-      reporte.id_agente?.toLowerCase().includes(filtroAgent.toLowerCase())&&
-      reporte.fchareg.includes(filtroFchCreado) &&
-      reporte.status?.toLowerCase().includes(filtroStatus.toLowerCase())&&
-      reporte.origen_r?.toLowerCase().includes(filtroOrigen.toLowerCase())&&
-      reporte.usuario_s?.toLowerCase().includes(filtroUsuario_s.toLowerCase())&&
-      reporte.us_obser?.toLowerCase().includes(filtroUs_obser.toLowerCase())&&
-      reporte.tdia?.toLowerCase().includes(filtroTdia.toLowerCase())&&
-      reporte.ndia?.toLowerCase().includes(filtroNdia.toLowerCase())&&
-      reporte.nomba?.toLowerCase().includes(filtroNomba.toLowerCase())&&
-      reporte.apell1a?.toLowerCase().includes(filtroApell1a.toLowerCase())&&
-      reporte.apell2a?.toLowerCase().includes(filtroApell2a.toLowerCase())&&
-      reporte.email?.toLowerCase().includes(filtroEmail.toLowerCase())&&
-      reporte.email2?.toLowerCase().includes(filtroEmail2.toLowerCase())&&
-      reporte.tel?.toLowerCase().includes(filtroTel.toLowerCase())&&
-      reporte.tel2?.toLowerCase().includes(filtroTel2.toLowerCase())&&
-      reporte.provi?.toLowerCase().includes(filtroProvi.toLowerCase())&&
-      reporte.canto?.toLowerCase().includes(filtroCanto.toLowerCase())&&
-      reporte.distr?.toLowerCase().includes(filtroDistr.toLowerCase())&&
-      reporte.materia?.toLowerCase().includes(filtroMateria.toLowerCase())&&
-      reporte.asunto?.toLowerCase().includes(filtroAsunto.toLowerCase())&&
-      reporte.bien?.toLowerCase().includes(filtroBien.toLowerCase())&&
-      reporte.tdic?.toLowerCase().includes(filtroTdic.toLowerCase())&&
-      reporte.ndic?.toLowerCase().includes(filtroNdic.toLowerCase())&&
-      reporte.razon_social?.toLowerCase().includes(filtroRsocial.toLowerCase())&&
-      reporte.nombre_fantasia?.toLowerCase().includes(filtroFantasia.toLowerCase())&&
-      reporte.desch?.toLowerCase().includes(filtroDesch.toLowerCase())&&
-      reporte.respe?.toLowerCase().includes(filtroRespe.toLowerCase())&&
-      (!startDateFilter || reportDate >= startOfDay(new Date(startDateFilter))) &&
-      (!endDateFilter || reportDate <= endOfDay(new Date(endDateFilter)))
-    );
-  }
-  return false; // Si no se proporciona la hora, no se considera el reporte
-  });
-    setReportes(filt);
-  };
+        return (
+          reporte.id_report.toString().includes(filtroNReport) &&
+          reporte.id_agente?.toLowerCase().includes(filtroAgent.toLowerCase()) &&
+          reporte.fchareg.includes(filtroFchCreado) &&
+          reporte.status?.toLowerCase().includes(filtroStatus.toLowerCase()) &&
+          reporte.origen_r?.toLowerCase().includes(filtroOrigen.toLowerCase()) &&
+          reporte.usuario_s?.toLowerCase().includes(filtroUsuario_s.toLowerCase()) &&
+          reporte.us_obser?.toLowerCase().includes(filtroUs_obser.toLowerCase()) &&
+          reporte.tdia?.toLowerCase().includes(filtroTdia.toLowerCase()) &&
+          reporte.ndia?.toLowerCase().includes(filtroNdia.toLowerCase()) &&
+          reporte.nomba?.toLowerCase().includes(filtroNomba.toLowerCase()) &&
+          reporte.apell1a?.toLowerCase().includes(filtroApell1a.toLowerCase()) &&
+          reporte.apell2a?.toLowerCase().includes(filtroApell2a.toLowerCase()) &&
+          reporte.email?.toLowerCase().includes(filtroEmail.toLowerCase()) &&
+          reporte.email2?.toLowerCase().includes(filtroEmail2.toLowerCase()) &&
+          reporte.tel?.toLowerCase().includes(filtroTel.toLowerCase()) &&
+          reporte.tel2?.toLowerCase().includes(filtroTel2.toLowerCase()) &&
+          reporte.provi?.toLowerCase().includes(filtroProvi.toLowerCase()) &&
+          reporte.canto?.toLowerCase().includes(filtroCanto.toLowerCase()) &&
+          reporte.distr?.toLowerCase().includes(filtroDistr.toLowerCase()) &&
+          reporte.materia?.toLowerCase().includes(filtroMateria.toLowerCase()) &&
+          reporte.asunto?.toLowerCase().includes(filtroAsunto.toLowerCase()) &&
+          reporte.bien?.toLowerCase().includes(filtroBien.toLowerCase()) &&
+          reporte.tdic?.toLowerCase().includes(filtroTdic.toLowerCase()) &&
+          reporte.ndic?.toLowerCase().includes(filtroNdic.toLowerCase()) &&
+          reporte.razon_social?.toLowerCase().includes(filtroRsocial.toLowerCase()) &&
+          reporte.nombre_fantasia?.toLowerCase().includes(filtroFantasia.toLowerCase()) &&
+          reporte.desch?.toLowerCase().includes(filtroDesch.toLowerCase()) &&
+          reporte.respe?.toLowerCase().includes(filtroRespe.toLowerCase()) &&
+          (!startDateFilter || reportDate >= startOfDay(new Date(startDateFilter))) &&
+          (!endDateFilter || reportDate <= endOfDay(new Date(endDateFilter)))
+        );
+      }
+    });
 
+    
+    
+    
+    // Pasar los filtros a la función
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    
+    
+    setReportes(filt.slice(startIndex, endIndex));
+    setAllReportes(filt);
+    const numPaginas = Math.ceil(filt.length / itemsPerPage);
+    setNumPaginas(numPaginas);
+    console.log(numPaginas)
+  };
 
   // Manejadores de eventos para los cambios en los inputs de los filtros
 
   const handleFiltroNReport = (e) => {
     setFiltroNReport(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroAgent = (e) => {
     setFiltroAgent(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroFchCreado = (e) => {
     setFiltroFchCreado(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroStatus = (e) => {
     setFiltroStatus(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroOrigen = (e) => {
     setFiltroOrigen(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroUsuario_s = (e) => {
     setFiltroUsuario_s(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroUs_obser = (e) => {
     setFiltroUs_obser(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroTdia = (e) => {
     setFiltroTdia(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroNdia = (e) => {
     setFiltroNdia(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroNomba = (e) => {
     setFiltroNomba(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroApell1a = (e) => {
     setFiltroApell1a(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroApell2a = (e) => {
     setFiltroApell2a(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroEmail = (e) => {
     setFiltroEmail(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroEmail2 = (e) => {
     setFiltroEmail2(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroTel = (e) => {
     setFiltroTel(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroTel2 = (e) => {
     setFiltroTel2(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroProvi = (e) => {
     setFiltroProvi(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroCanto = (e) => {
     setFiltroCanto(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroDistr = (e) => {
     setFiltroDistr(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroMateria = (e) => {
     setFiltroMateria(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroAsunto = (e) => {
     setFiltroAsunto(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroBien = (e) => {
     setFiltroBien(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroTdic = (e) => {
     setFiltroTdic(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroNdic = (e) => {
     setFiltroNdic(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroRsocial = (e) => {
     setFiltroRsocial(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroFantasia = (e) => {
     setFiltroFantasia(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroDesch = (e) => {
     setFiltroDesch(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleFiltroRespe = (e) => {
     setFiltroRespe(e.target.value);
+    setCurrentPage(1);
   };
 
   const handleStartDateChange = (date) => {
     setStartDateFilter(date);
+    setCurrentPage(1);
   };
   
   const handleEndDateChange = (date) => {
     setEndDateFilter(date);
+    setCurrentPage(1);
   };
 
   const handleFiltrarClick = () => {
     buscarReportes();
+    setCurrentPage(1);
+  };
+
+  const handleBorrarFiltrosClick = () => {
+    buscarReportes();
+    const numPaginas = Math.ceil(dreportes.length / itemsPerPage);
+    setNumPaginas(numPaginas);
+    console.log(numPaginas)
+  };
+
+  const exportarTodosLosDatos = () => {
+    // Copia profunda de los datos originales para evitar modificaciones no deseadas
+    const datosExportar = JSON.parse(JSON.stringify(allreportes));
+  
+    // Renombrar las columnas
+    datosExportar.forEach((reporte) => {
+      reporte['# Reporte'] = reporte.id_report;
+      reporte['Agente'] = reporte.id_agente;
+      reporte['Fch. Creado'] = reporte.fchareg;
+      reporte['Estado'] = reporte.status;
+      reporte['Origen'] = reporte.origen_r;
+      reporte['Usuario Especial'] = reporte.usuario_s;
+      reporte['Observación'] = reporte.us_obser;
+      reporte['Tipo Ident.'] = reporte.tdia;
+      reporte['N. Ident.'] = reporte.ndia;
+      reporte['Nombre Cliente'] = reporte.nomba;
+      reporte['1er Apell Cliente'] = reporte.apell1a;
+      reporte['2do Apell Cliente'] = reporte.apell2a;
+      reporte['Correo 1'] = reporte.email;
+      reporte['Correo 2'] = reporte.email2;
+      reporte['Telefono 1'] = reporte.tel;
+      reporte['Telefono 2'] = reporte.tel2;
+      reporte['Provincia'] = reporte.provi;
+      reporte['Canton'] = reporte.canto;
+      reporte['Distrito'] = reporte.distr;
+      reporte['Materia'] = reporte.materia;
+      reporte['Asunto Consult.'] = reporte.asunto;
+      reporte['Bien'] = reporte.bien;
+      reporte['Tipo Ident. Comerciante'] = reporte.tdic;
+      reporte['N. Ident. Comerciante'] = reporte.ndic;
+      reporte['Razon Social/Nombre Comerciante'] = reporte.razon_social;
+      reporte['Nombre Fantasía'] = reporte.nombre_fantasia;
+      reporte['Descripción del caso'] = reporte.desch;
+      reporte['Respuesta Enviada'] = reporte.respe;
+      
+      // Eliminacion de las columnas originales
+      delete reporte.id_report;
+      delete reporte.id_agente;
+      delete reporte.fchareg;
+      delete reporte.status;
+      delete reporte.origen_r;
+      delete reporte.usuario_s;
+      delete reporte.us_obser;
+      delete reporte.tdia;
+      delete reporte.ndia;
+      delete reporte.nomba;
+      delete reporte.apell1a;
+      delete reporte.apell2a;
+      delete reporte.email;
+      delete reporte.email2;
+      delete reporte.tel;
+      delete reporte.tel2;
+      delete reporte.provi;
+      delete reporte.canto;
+      delete reporte.distr;
+      delete reporte.materia;
+      delete reporte.asunto;
+      delete reporte.bien;
+      delete reporte.tdic;
+      delete reporte.ndic;
+      delete reporte.razon_social;
+      delete reporte.nombre_fantasia;
+      delete reporte.desch;
+      delete reporte.respe;
+      delete reporte.id;
+      delete reporte.fchacomplet;
+      delete reporte.tel_origen;
+      delete reporte.fchahech;
+      delete reporte.fchagar;
+      delete reporte.id_audio;
+      delete reporte.id_correo;
+    });
+  
+    const ws = XLSX.utils.json_to_sheet(datosExportar);
+    const wb = XLSX.utils.book_new(); //Genera nuevo libro
+    const sheetName = "SolicitudAsesorias"; //Nombre de la pestaña
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    XLSX.writeFile(wb, "Reporte_General.xlsx"); //Nombre del documento
   };
   
 
-  const getReportes = async () => {
-    const res = await axios.get(URI)
-    const report = res.data
-    
-    setReportes(report)
-    setDReportes(report)
-  }
+  const todosFiltrosEstanVacios = () => {
+    setAllReportes(freportes);
+    return (
+      filtroNReport === "" &&
+      filtroAgent === "" &&
+      filtroFchCreado === "" &&
+      filtroStatus === "" &&
+      filtroOrigen === "" &&
+      filtroUsuario_s === "" &&
+      filtroUs_obser === "" &&
+      filtroTdia === "" &&
+      filtroNdia === "" &&
+      filtroNomba === "" &&
+      filtroApell1a === "" &&
+      filtroApell2a === "" &&
+      filtroEmail === "" &&
+      filtroEmail2 === "" &&
+      filtroTel === "" &&
+      filtroTel2 === "" &&
+      filtroProvi === "" &&
+      filtroCanto === "" &&
+      filtroDistr === "" &&
+      filtroMateria === "" &&
+      filtroAsunto === "" &&
+      filtroBien === "" &&
+      filtroTdic === "" &&
+      filtroNdic === "" &&
+      filtroRsocial === "" &&
+      filtroFantasia === "" &&
+      filtroDesch === "" &&
+      filtroRespe === "" &&
+      !startDateFilter &&
+      !endDateFilter
+    );
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    const startIndex = (pageNumber - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    setReportes(dreportes.slice(startIndex, endIndex));
+  };
+
+  useEffect(() => {
+    getReportes()
+  }, [])
+
+  useEffect(() => {
+    if (todosFiltrosEstanVacios()) {
+      handleBorrarFiltrosClick(); //Si no hay filtros aplicados
+    } else {
+      buscarReportes(); // Llamar a la función de búsqueda si hay filtros aplicados
+    }
+  }, [startIndex, endIndex,
+    filtroNReport,
+    filtroAgent,
+    filtroFchCreado,
+    filtroStatus,
+    filtroOrigen,
+    filtroUsuario_s,
+    filtroUs_obser,
+    filtroTdia,
+    filtroNdia,
+    filtroNomba,
+    filtroApell1a,
+    filtroApell2a,
+    filtroEmail,
+    filtroEmail2,
+    filtroTel,
+    filtroTel2,
+    filtroProvi,
+    filtroCanto,
+    filtroDistr,
+    filtroMateria,
+    filtroAsunto,
+    filtroBien,
+    filtroTdic,
+    filtroNdic,
+    filtroRsocial,
+    filtroFantasia,
+    filtroDesch,
+    filtroRespe,
+    startDateFilter,
+    endDateFilter,
+  ]);
 
   return (
     <>
@@ -339,16 +553,15 @@ function Dashboard() {
           </div>
         </div>
       </nav>
-      <div className="container-fluid position-absolute start-0 w-auto p-3 table-bordered">
-        <div className="d-flex flex-row mb-1 ms-2">
-          <ReactHTMLTableToExcel
-            id="test-table-xls-button"
-            className="btn btn-success me-1"
-            table="RepoSoliPres"
-            filename="Reporte General"
-            sheet="Solicitud Presencial de Asesorias"
-            buttonText="Exportar datos a Excel"
-          />
+      <div className="container-fluid position-absolute start-0 w-auto p-3">
+      <div className="d-flex flex-row mb-1 ms-2">
+          <button
+            className="btn btn-success"
+            onClick={() => exportarTodosLosDatos()}
+          >
+            Exportar datos a Excel
+          </button>
+          <div className="datepicker">
           <DatePicker.default
             selected={startDateFilter}
             onChange={handleStartDateChange}
@@ -367,12 +580,14 @@ function Dashboard() {
             placeholderText="Fecha final"
             dateFormat="dd/MM/yyyy, HH:mm:ss"
           />
+          </div>
+          
 
           <button onClick={handleFiltrarClick} className="btn btn-primary">Filtrar</button>
           <button className="d-none btn btn-success me-1">Exportar datos a PDF</button>
           <button className="d-none btn btn-success">Exportar datos a CSV </button>
       </div>
-        <table id="RepoSoliPres" className="table table-dark table-striped caption-top badge text-nowrap table-bordered border-primary">
+        <table class="table table-container table-bordered table-striped table-hover">
           <caption>Reportes solicitud de asesoria presencial</caption>
           <thead>
             <tr>
@@ -472,21 +687,24 @@ function Dashboard() {
             )}
           </tbody>
         </table>
-        <nav className="d-none" aria-label="...">
-          <ul className="pagination">
-            <li className="page-item disabled">
-              <a className="page-link">Previous</a>
-            </li>
-            <li className="page-item active"><a className="page-link" href="#">1</a></li>
-            <li className="page-item" aria-current="page">
-              <a className="page-link" href="#">2</a>
-            </li>
-            <li className="page-item"><a className="page-link" href="#">3</a></li>
-            <li className="page-item">
-              <a className="page-link" href="#">Next</a>
-            </li>
-          </ul>
-        </nav>
+        <nav aria-label="...">
+  <ul className="pagination">
+    {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
+      <li
+        key={i}
+        className={`page-item ${currentPage === startPage + i ? "active" : ""}`}
+      >
+        <a
+          className="page-link"
+          href="#"
+          onClick={() => handlePageChange(startPage + i)}
+        >
+          {startPage + i}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
 
       </div>
     </>
