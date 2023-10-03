@@ -88,7 +88,8 @@ function Dashboard() {
   // Función de búsqueda que combina los filtros
   const buscarReportes = () => {
     // Obtener los datos de la base de datos
-    const filt = dreportes.filter((reporte) => {
+    const filt = dreportes.filter((reporte) => 
+    /*{
       const [fechaPart, horaPart] = reporte.fchareg.split(', ');
   
       // Separar la cadena de fecha en día, mes y año
@@ -102,7 +103,7 @@ function Dashboard() {
         // Crear un objeto Date con los valores extraídos
         const reportDate = new Date(ano, mes - 1, dia, horas, minutos, segundos);
   
-        return (
+        return (*/
           reporte.id_report.toString().includes(filtroNReport) &&
           reporte.id_agente?.toLowerCase().includes(filtroAgent.toLowerCase()) &&
           reporte.fchareg.includes(filtroFchCreado) &&
@@ -130,12 +131,12 @@ function Dashboard() {
           reporte.razon_social?.toLowerCase().includes(filtroRsocial.toLowerCase()) &&
           reporte.nombre_fantasia?.toLowerCase().includes(filtroFantasia.toLowerCase()) &&
           reporte.desch?.toLowerCase().includes(filtroDesch.toLowerCase()) &&
-          reporte.respe?.toLowerCase().includes(filtroRespe.toLowerCase()) &&
+          reporte.respe?.toLowerCase().includes(filtroRespe.toLowerCase()) /*&&
           (!startDateFilter || reportDate >= startOfDay(new Date(startDateFilter))) &&
-          (!endDateFilter || reportDate <= endOfDay(new Date(endDateFilter)))
+          (!endDateFilter || reportDate <= endOfDay(new Date(endDateFilter)))*/
         );
-      }
-    });
+     /* }
+    });*/
 
     
     
@@ -152,9 +153,9 @@ function Dashboard() {
     console.log(numPaginas)
   };
 
-  // Manejadores de eventos para los cambios en los inputs de los filtros
+   // Manejadores de eventos para los cambios en los inputs de los filtros
 
-  const handleFiltroNReport = (e) => {
+   const handleFiltroNReport = (e) => {
     setFiltroNReport(e.target.value);
     setCurrentPage(1);
   };
@@ -566,7 +567,7 @@ function Dashboard() {
           >
             Exportar datos a Excel
           </button>
-          <div className=" d-flex flex-row mb-0 ms-2 datepicker">
+          <div className="d-none d-flex flex-row mb-0 ms-2 datepicker">
           <DatePicker.default
             selected={startDateFilter}
             onChange={handleStartDateChange}
@@ -586,9 +587,24 @@ function Dashboard() {
             dateFormat="dd/MM/yyyy, HH:mm:ss"
           />
           </div>
-          
-
-          <button className="btn btn-success" onClick={resetDates}>Reiniciar</button>
+          <nav aria-label="...">
+  <ul className="d-flex flex-row mb-1 ms-2 pagination">
+    <li className="page-item">
+      <select
+        className="form-select"
+        onChange={(e) => handlePageChange(parseInt(e.target.value))}
+        value={currentPage}
+      >
+        {Array.from({ length: numPaginas }, (_, i) => (
+          <option key={i} value={i + 1}>
+            Página {i + 1}
+          </option>
+        ))}
+      </select>
+    </li>
+  </ul>
+</nav>
+          {/*<button className="btn btn-success" onClick={resetDates}>Reiniciar</button>*/}
           <button className="d-none btn btn-success me-1">Exportar datos a PDF</button>
           <button className="d-none btn btn-success">Exportar datos a CSV </button>
       </div>
@@ -692,6 +708,27 @@ function Dashboard() {
             )}
           </tbody>
         </table>
+        {/* Este es el paginador viejo
+        
+        <nav aria-label="...">
+    <ul className="pagination">
+      {Array.from({ length: numPaginas }, (_, i) => (
+        <li
+          key={i}
+          className={`page-item ${currentPage === i + 1 ? "active" : ""}`}
+        >
+          <a
+            className="page-link"
+            href="#"
+            onClick={() => handlePageChange(i + 1)}
+          >
+            {i + 1}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+        
         <nav aria-label="...">
   <ul className="pagination">
     {Array.from({ length: endPage - startPage + 1 }, (_, i) => (
@@ -709,8 +746,27 @@ function Dashboard() {
       </li>
     ))}
   </ul>
+</nav>*/}
+<nav aria-label="...">
+  <ul className="pagination">
+    <li className="page-item">
+      <select
+        className="form-select"
+        onChange={(e) => {
+          handlePageChange(parseInt(e.target.value));
+          window.scrollTo(0, 0); // Esta línea volverá al principio de la página
+        }}
+        value={currentPage}
+      >
+        {Array.from({ length: numPaginas }, (_, i) => (
+          <option key={i} value={i + 1}>
+            Página {i + 1}
+          </option>
+        ))}
+      </select>
+    </li>
+  </ul>
 </nav>
-
       </div>
     </>
   );
