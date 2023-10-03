@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+//import axios from "axios";
 import Cookies from 'universal-cookie'
 
 
 const cookies = new Cookies()
-const meicimg = "logo_meic.jpg";
-const alegaimg = "logo.png";
+const meicimg = "logo.png";
+const alegaimg = "logo_alega.png";
 const URI = "https://fwmback-production.up.railway.app/asepress";
-
-
 
 function Home() {
   const [ agente, setAgente ] = useState(cookies.get('info'))
@@ -23,6 +21,7 @@ function Home() {
   }
 
   const [ reportes, setReportes ] = useState([])
+  /*
   useEffect(() => {
     getReportes()
   }, [])
@@ -32,7 +31,7 @@ function Home() {
     const report = res.data
     setReportes(report)
   }
-
+*/
   return (
     <>
       <nav className="navbar bg-body-white fixed-top position-relative shadow">
