@@ -44,22 +44,20 @@ const CompFormpres = () => {
         const may = nReporte
 
         console.log(data)
+        console.log(data)
         setidNR(data)
 
         setnRegistro(may)
     } catch (error) {
         console.error(error);
-        const confirmRetryPage = window.confirm(
-            'Ocurrió un error red al realizar la solicitud. ¿Desea intentar de nuevo?'
+        alert("Ocurrio un error, se muestra")
+        /*const confirmRetry = window.confirm(
+            'Ocurrió un error al realizar la solicitud. ¿Desea intentar de nuevo?'
         );
 
-        if (confirmRetryPage) {
+        if (confirmRetry) {
             NextRegister(); // Intentar de nuevo llamando a la función
-            //Llamamos tambien las otras funciones afectadas por la desconexion
-            getProvs();
-            getMaterias();
-            getBienes();
-        }
+        }*/
     }
 };
 
@@ -214,6 +212,7 @@ const CompFormpres = () => {
   const [ prov, setProv ] = useState([]);
   const [ cant, setCant ] = useState([]);
   const [ dist, setDist ] = useState([]);
+
   useEffect(() => {
     getProvs()
     getMaterias()
