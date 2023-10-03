@@ -49,7 +49,17 @@ const CompFormpres = () => {
         setnRegistro(may)
     } catch (error) {
         console.error(error);
-        alert("Ocurrio un error")
+        const confirmRetryPage = window.confirm(
+            'Ocurrió un error red al realizar la solicitud. ¿Desea intentar de nuevo?'
+        );
+
+        if (confirmRetryPage) {
+            NextRegister(); // Intentar de nuevo llamando a la función
+            //Llamamos tambien las otras funciones afectadas por la desconexion
+            getProvs();
+            getMaterias();
+            getBienes();
+        }
     }
 };
 
