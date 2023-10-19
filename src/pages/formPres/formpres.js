@@ -73,140 +73,6 @@ const CompFormpres = () => {
 
     //setnRegistro(may)
 
-  const EnviarDatos = async (v) => {
-    const fecha = new Date().toLocaleString();
-    setFchareg(fecha)
-    if (v === 1) {
-      console.log("EnviarDatos se llama de forma reciproca")          
-    }else{
-      alert("Se procede a guardar los datos");
-    }
-    
-    var nagente = cookies.get('info')
-    let headersList = {
-      Accept: "*/*",
-      //"User-Agent": "Thunder Client (https://www.thunderclient.com)",
-      "Content-Type": "application/json",
-    };
-
-    if (!nReporte) {
-      console.log("nReporte esta null")
-      console.log(nReporte)
-      NextRegister()      
-    } else {
-      let bodyContent = JSON.stringify({
-        id_report: nReporte,
-        fchareg: fchareg,
-        id_agente: nagente,
-        fchacomplet: fchacomplet,
-        status: eRegistro,
-        origen_r: oRegistro,
-        tel_origen: toRegistro,
-        usuario_s: userspe,
-        us_obser: usobser,
-        tdia: tdiA,
-        ndia: ndiA,
-        nomba: nombA,
-        apell1a: apell1A,
-        apell2a: apell2A,
-        email: email,
-        email2: email2,
-        tel: tel,
-        tel2: tel2,
-        provi: provi,
-        canto: canto,
-        distr: distr,
-        materia: ubMat,
-        asunto: ubAsu,
-        bien: ubBie,
-        razon_social: rsocial,
-        nombre_fantasia: nfantasy,
-        tdic: tdiC,
-        ndic: ndiC,
-        fchahech: fchaHech,
-        fchagar: fchaGar,
-        desch: descH,
-        respe: resp,
-        id_audio: idaudio,
-        id_correo: idcorreo,
-      });
-
-      console.log(bodyContent)
-      let reqOptions = {
-        url: "https://fwmback-production.up.railway.app/asepress",
-        method: "POST",
-        headers: headersList,
-        data: bodyContent,
-      }
-      try{
-      let response = await axios.request(reqOptions);
-      if (response.data.status === 400 || response.data.message === 'Validation error') {
-        nReporte = ++nReporte
-        console.log(nReporte)  
-        console.log("no se guardo el dato.")
-      } else {
-        console.log(response)
-        alert("Registro Creado Correctamente....");
-        NextRegister()
-        //window.location.reload()
-      }
-    } catch (error) {
-      console.error("Ocurrió un error de red:", error);
-
-      // Mostrar un mensaje de alerta
-      const retry = window.confirm("Ocurrió un error de red. ¿Desea intentar de nuevo?");
-
-      if (retry) {
-        // Reintentar la llamada a la función
-        EnviarDatos(v);
-      }
-    }
-  }
-};
-
-  //Validacion de formulario antes de enviar correo
-  const validarbtnSubmit = (e) => {
-    e.preventDefault();
-    NextRegister()
-    const NR = 1;
-    if (NR != null) {
-      if (
-        (telorigen != "" && telorigen != " ") &&
-        (agente != "" && agente != " ") &&
-        (usobser != "" && usobser != " ") &&
-        (ndiA != "" && ndiA != " ") &&
-        (nombA != "" && nombA != " ") &&
-        (apell1A != "" && apell1A != " ") &&
-        (apell2A != "" && apell2A != " ") &&
-        (email2 != "" && email2 != " ") &&
-        (email != "" && email != " ") &&
-        (tel != "" && tel != " ") &&
-        (tel2 != "" && tel2 != " ") &&
-        (fchaHech != "" && fchaHech != " ") &&
-        (fchaGar != "" && fchaGar != " ") &&
-        (prov != false) &&
-        (cant != false) &&
-        (distr != false) &&
-        (ubMat != '') &&
-        (ubAsu != '') &&
-        (ubBie != '') &&
-        (tdiC != null && tdiC != " ") &&
-        (ndiC != null && ndiC != " ") &&
-        (nombC != "" && nombC != " ") &&
-        (apell1C != "" && apell1C != " ") &&
-        (apell2C != "" && apell2C != " ") &&
-        (descH != "" && descH != " ") &&
-        (resp != "" && resp != " ")
-      ) {
-        EnviarDatos();
-      } else {
-        alert("faltan datos");
-      }
-    } else {
-      alert("Por favor, confirme que es humano...");
-    }
-  };
-
   //#region useStates de los select
   //useState de datos
   const [ prov, setProv ] = useState([]);
@@ -390,6 +256,131 @@ const CompFormpres = () => {
   //#endregion
 
   //#region Validacion de inputs
+
+  const EnviarDatos = async (v) => {
+    let fecha = new Date().toLocaleString();
+    let fchareg = fecha;
+    setFchareg(fecha)
+
+    if (v === 1) {
+      console.log("EnviarDatos se llama de forma reciproca")          
+    }else{
+      alert("Se procede a guardar los datos");
+    }
+    
+    var nagente = cookies.get('info')
+    let headersList = {
+      Accept: "*/*",
+      //"User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      "Content-Type": "application/json",
+    };
+
+    if (!nReporte) {
+      console.log("nReporte esta null")
+      console.log(nReporte)
+      NextRegister()      
+    } else {
+      let bodyContent = JSON.stringify({
+        id_report: ++nReporte,
+        fchareg: fchareg,
+        id_agente: nagente,
+        fchacomplet: fchacomplet,
+        status: eRegistro,
+        origen_r: oRegistro,
+        tel_origen: toRegistro,
+        usuario_s: userspe,
+        us_obser: usobser,
+        tdia: tdiA,
+        ndia: ndiA,
+        nomba: nombA,
+        apell1a: apell1A,
+        apell2a: apell2A,
+        email: email,
+        email2: email2,
+        tel: tel,
+        tel2: tel2,
+        provi: provi,
+        canto: canto,
+        distr: distr,
+        materia: ubMat,
+        asunto: ubAsu,
+        bien: ubBie,
+        razon_social: rsocial,
+        nombre_fantasia: nfantasy,
+        tdic: tdiC,
+        ndic: ndiC,
+        fchahech: fchaHech,
+        fchagar: fchaGar,
+        desch: descH,
+        respe: resp,
+        id_audio: idaudio,
+        id_correo: idcorreo,
+      });
+
+      console.log(bodyContent)
+      let reqOptions = {
+        url: "https://fwmback-production.up.railway.app/asepress",
+        method: "POST",
+        headers: headersList,
+        data: bodyContent,
+      }
+
+      let response = await axios.request(reqOptions);
+      if (response.data.status === 400 || response.data.message === 'Validation error') {
+        console.log(nReporte)  
+        console.log("no se guardo el dato.")
+        EnviarDatos(1)
+      } else {
+        console.log(response)
+        alert("Registro Creado Correctamente....");
+        NextRegister()
+        //window.location.reload()
+      }
+    }
+  };
+
+  //Validacion de formulario antes de enviar correo
+  const validarbtnSubmit = (e) => {
+    e.preventDefault();
+    NextRegister()
+    const NR = 1;
+    if (NR != null) {
+      if (
+        (telorigen != "" && telorigen != " ") &&
+        (agente != "" && agente != " ") &&
+        (usobser != "" && usobser != " ") &&
+        (ndiA != "" && ndiA != " ") &&
+        (nombA != "" && nombA != " ") &&
+        (apell1A != "" && apell1A != " ") &&
+        (apell2A != "" && apell2A != " ") &&
+        (email2 != "" && email2 != " ") &&
+        (email != "" && email != " ") &&
+        (tel != "" && tel != " ") &&
+        (tel2 != "" && tel2 != " ") &&
+        (fchaHech != "" && fchaHech != " ") &&
+        (fchaGar != "" && fchaGar != " ") &&
+        (prov != false) &&
+        (cant != false) &&
+        (distr != false) &&
+        (ubMat != '') &&
+        (ubAsu != '') &&
+        (ubBie != '') &&
+        (tdiC != null && tdiC != " ") &&
+        (ndiC != null && ndiC != " ") &&
+        (nombC != "" && nombC != " ") &&
+        (apell1C != "" && apell1C != " ") &&
+        (apell2C != "" && apell2C != " ") &&
+        (descH != "" && descH != " ") &&
+        (resp != "" && resp != " ")
+      ) {
+        EnviarDatos();
+      } else {
+        alert("faltan datos");
+      }
+    } else {
+      alert("Por favor, confirme que es humano...");
+    }
+  };
   function limpiardatosA() {
     setndiA('')
     setnombA("")
@@ -1068,8 +1059,6 @@ const ValidarinputResp = (val) => {
 
 //Validacion del campo inputCed del afectado
 const validarInputCedA = (val, ub) => {
-  const fecha = new Date().toLocaleString();
-  setFchareg(fecha)
   const valor = val;
   setndiA(valor);
   if (ub == 1) {
