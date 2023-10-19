@@ -662,7 +662,7 @@ function Dashboard() {
            Datos mostrados: {rowsCount}
         </div>
         <table class="table table-container table-bordered table-striped table-hover">
-          <caption>Reportes solicitud de asesoria presencial</caption>
+          {/*<caption>Reportes solicitud de asesoria presencial</caption>*/}
           <thead>
             <tr>
               <th scope="col"># Reporte</th>
