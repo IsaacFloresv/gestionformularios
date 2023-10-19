@@ -5,11 +5,8 @@ import Cookies from "universal-cookie";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { startOfDay, endOfDay } from "date-fns";
-//import ExcelJS from 'exceljs';
 import * as XLSX from "xlsx";
 import "./dashboard.css";
-
-//import ReactHTMLTableToExcel from './ReactHTMLTableToExcel.jsx'
 
 const cookies = new Cookies();
 const meicimg = "logo_meic.jpg";
@@ -70,6 +67,7 @@ function Dashboard() {
   const maxPagesToShow = 10; // Número máximo de páginas a mostrar a la vez
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
   const endPage = Math.min(numPaginas, startPage + maxPagesToShow - 1);
+  const [rowsCount, setRowsCount] = useState(0);
 
   const getReportes = async () => {
     const res = await axios.get(URI);
@@ -80,15 +78,15 @@ function Dashboard() {
     setDReportes(report);
     setFReportes(report);
     setAllReportes(report);
+    setRowsCount(report.length);
   };
 
   // Función de búsqueda que combina los filtros
   const buscarReportes = () => {
-    console.log("hola")
     // Obtener los datos de la base de datos
     const filt = dreportes.filter(
       (reporte) =>
-        /*{
+        {
       const [fechaPart, horaPart] = reporte.fchareg.split(', ');
   
       // Separar la cadena de fecha en día, mes y año
@@ -101,10 +99,12 @@ function Dashboard() {
   
         // Crear un objeto Date con los valores extraídos
         const reportDate = new Date(ano, mes - 1, dia, horas, minutos, segundos);
+
+        const agentes = filtroAgent.split(',').map((agente) => agente.trim().toLowerCase());
   
-        return (*/
+        return (
         reporte.id_report.toString().includes(filtroNReport) &&
-        reporte.id_agente?.toLowerCase().includes(filtroAgent.toLowerCase()) &&
+        agentes.some((agente) => reporte.id_agente?.toLowerCase().includes(agente)) &&
         reporte.fchareg.includes(filtroFchCreado) &&
         reporte.status?.toLowerCase().includes(filtroStatus.toLowerCase()) &&
         reporte.origen_r?.toLowerCase().includes(filtroOrigen.toLowerCase()) &&
@@ -138,12 +138,12 @@ function Dashboard() {
           ?.toLowerCase()
           .includes(filtroFantasia.toLowerCase()) &&
         reporte.desch?.toLowerCase().includes(filtroDesch.toLowerCase()) &&
-        reporte.respe?.toLowerCase().includes(filtroRespe.toLowerCase()) /*&&
+        reporte.respe?.toLowerCase().includes(filtroRespe.toLowerCase()) &&
           (!startDateFilter || reportDate >= startOfDay(new Date(startDateFilter))) &&
-          (!endDateFilter || reportDate <= endOfDay(new Date(endDateFilter)))*/
+          (!endDateFilter || reportDate <= endOfDay(new Date(endDateFilter)))
     );
-    /* }
-    });*/
+     }
+    });
 
     // Pasar los filtros a la función
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -154,6 +154,7 @@ function Dashboard() {
     const numPaginas = Math.ceil(filt.length / itemsPerPage);
     setNumPaginas(numPaginas);
     console.log(numPaginas);
+    setRowsCount(filt.length);
   };
 
   // Manejadores de eventos para los cambios en los inputs de los filtros
@@ -318,6 +319,8 @@ function Dashboard() {
     const numPaginas = Math.ceil(dreportes.length / itemsPerPage);
     setNumPaginas(numPaginas);
     console.log(numPaginas);
+    setStartDateFilter(null);
+    setEndDateFilter(null);
     console.log("adios");
   };
 
@@ -499,6 +502,7 @@ function Dashboard() {
   const resetDates = () => {
     setStartDateFilter(null);
     setEndDateFilter(null);
+    setCurrentPage(1);
   };
 
   return (
@@ -603,7 +607,7 @@ function Dashboard() {
           >
             Exportar datos a Excel
           </button>
-          <div className="d-none d-flex flex-row mb-0 ms-2 datepicker">
+          <div className="d-flex flex-row mb-0 ms-2 datepicker">
             <DatePicker.default
               selected={startDateFilter}
               onChange={handleStartDateChange}
@@ -623,6 +627,12 @@ function Dashboard() {
               dateFormat="dd/MM/yyyy, HH:mm:ss"
             />
           </div>
+          <button
+            className="btn btn-success"
+            onClick={() => resetDates()}
+          >
+            Eliminar filtro fecha
+          </button>
           <nav aria-label="...">
             <ul className="d-flex flex-row mb-1 ms-2 pagination">
               <li className="page-item">
@@ -633,7 +643,7 @@ function Dashboard() {
                 >
                   {Array.from({ length: numPaginas }, (_, i) => (
                     <option key={i} value={i + 1}>
-                      Página {i + 1}
+                      Pg. {i + 1}
                     </option>
                   ))}
                 </select>
@@ -647,6 +657,9 @@ function Dashboard() {
           <button className="d-none btn btn-success">
             Exportar datos a CSV{" "}
           </button>
+        </div>
+        <div className="pagination-info">
+           Datos mostrados: {rowsCount}
         </div>
         <table class="table table-container table-bordered table-striped table-hover">
           <caption>Reportes solicitud de asesoria presencial</caption>
@@ -855,7 +868,7 @@ function Dashboard() {
               >
                 {Array.from({ length: numPaginas }, (_, i) => (
                   <option key={i} value={i + 1}>
-                    Página {i + 1}
+                    Pg. {i + 1}
                   </option>
                 ))}
               </select>
