@@ -265,7 +265,7 @@ const CompFormpres = () => {
     if (v === 1) {
       console.log("EnviarDatos se llama de forma reciproca")          
     }else{
-      alert("Se procede a guardar los datos");
+      console.log("Se procede a guardar los datos");
     }
     
     var nagente = cookies.get('info')
@@ -334,7 +334,8 @@ const CompFormpres = () => {
         console.log(response)
         alert("Registro Creado Correctamente....");
         NextRegister()
-        //window.location.reload()
+        window.location.reload()
+        window.scrollTo(0, 0);
       }
     }
   };
@@ -373,6 +374,7 @@ const CompFormpres = () => {
         (descH != "" && descH != " ") &&
         (resp != "" && resp != " ")
       ) {
+        setdehabilSubmit(true)
         EnviarDatos();
       } else {
         alert("faltan datos");
