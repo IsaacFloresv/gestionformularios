@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Select from "react-select";
-import Cookies from 'universal-cookie'
+import Cookies from "universal-cookie";
 import { Link } from "react-router-dom";
 
-const cookies = new Cookies()
-var nReporte
+const cookies = new Cookies();
+var nReporte;
 
 const URI = "https://fwmback-production.up.railway.app/";
 //const URIEMAIL = "https://sndmail-production-cdb6.up.railway.app/sendemail";
@@ -14,55 +14,45 @@ const CompFormpres = () => {
   //#region UseStates
 
   const CerrarSession = () => {
-    const respuesta = confirm("¿Desea salir?")
+    const respuesta = confirm("¿Desea salir?");
     if (respuesta == true) {
-      cookies.remove('info')
-      cookies.remove('token')
+      cookies.remove("info");
+      cookies.remove("token");
     }
-  }
+  };
 
   //Obtener el numero del ultimo
   const NextRegister = async () => {
     try {
-        let headersList = {
-            "Accept": "*/*",
-            "User-Agent": "Thunder Client (https://www.thunderclient.com)"
+      let headersList = {
+        Accept: "*/*",
+        "User-Agent": "Thunder Client (https://www.thunderclient.com)",
+      };
+
+      let response = await fetch(
+        "https://fwmback-production.up.railway.app/amp",
+        {
+          method: "PUT",
+          headers: headersList,
         }
+      );
 
-        let response = await fetch("https://fwmback-production.up.railway.app/amp", {
-            method: "PUT",
-            headers: headersList
-        });
+      setAgente(cookies.get("info"));
+      let data = await response.text();
+      nReporte = data;
+      const may = nReporte;
 
-        if (!response.ok) {
-            throw new Error('Ocurrió un error al realizar la solicitud.');
-        }
+      console.log(data);
+      setidNR(data);
 
-        setAgente(cookies.get('info'))
-        let data = await response.text();
-        nReporte = data
-        const may = nReporte
-
-        console.log(data)
-        console.log(data)
-        setidNR(data)
-
-        setnRegistro(may)
+      setnRegistro(may);
     } catch (error) {
-        console.error(error);
-        alert("Ocurrio un error, se muestra")
-        /*const confirmRetry = window.confirm(
-            'Ocurrió un error al realizar la solicitud. ¿Desea intentar de nuevo?'
-        );
-
-        if (confirmRetry) {
-            NextRegister(); // Intentar de nuevo llamando a la función
-        }*/
+      console.error(error);
+      NextRegister();
     }
-};
+  };
 
-
-      /*Parte del codigo antiguo de NextRegister
+  /*Parte del codigo antiguo de NextRegister
       let may = await response.text();
     let rmay = (may++)
     nreport = rmay
@@ -71,187 +61,187 @@ const CompFormpres = () => {
     
     console.log(nreport, data)*/
 
-    //setnRegistro(may)
+  //setnRegistro(may)
 
   //#region useStates de los select
   //useState de datos
-  const [ prov, setProv ] = useState([]);
-  const [ cant, setCant ] = useState([]);
-  const [ dist, setDist ] = useState([]);
+  const [prov, setProv] = useState([]);
+  const [cant, setCant] = useState([]);
+  const [dist, setDist] = useState([]);
 
   useEffect(() => {
-    getProvs()
-    getMaterias()
-    getBienes()
-    NextRegister()
-  }, [])
+    getProvs();
+    getMaterias();
+    getBienes();
+    NextRegister();
+  }, []);
 
   //
-  const [ materia, setMateria ] = useState([]);
-  const [ asunto, setAsunto ] = useState([]);
-  const [ bien, setBien ] = useState([]);
+  const [materia, setMateria] = useState([]);
+  const [asunto, setAsunto] = useState([]);
+  const [bien, setBien] = useState([]);
 
   //useState de datos del registro
-  const [ idReporte, setIdReporte ] = useState();
-  const [ nRegistro, setnRegistro ] = useState();
-  const [ eRegistro, seteRegistro ] = useState("Activo");
-  const [ oRegistro, setoRegistro ] = useState("Presencial");
-  const [ toRegistro, settoRegistro ] = useState("NO INDICA");
-  const [ fchareg, setFchareg ] = useState();
-  const [ fchacomplet, setFchacomplet ] = useState("PENDIENTE");
+  const [idReporte, setIdReporte] = useState();
+  const [nRegistro, setnRegistro] = useState();
+  const [eRegistro, seteRegistro] = useState("Activo");
+  const [oRegistro, setoRegistro] = useState("Presencial");
+  const [toRegistro, settoRegistro] = useState("NO INDICA");
+  const [fchareg, setFchareg] = useState();
+  const [fchacomplet, setFchacomplet] = useState("PENDIENTE");
 
   //#endregion useStates de los select
 
   //#region useState de carga de Datos Personas y Comerciante
-  const [ agente, setAgente ] = useState(cookies.get('info'));
-  const [ pers, setPers ] = useState([]);
-  const [ comer, setComer ] = useState([]);
-  const [ userspe, setUserspe ] = useState("NO APLICA");
-  const [ usobser, setUsobser ] = useState("NO APLICA");
-  const [ idprov, setidProv ] = useState();
-  const [ idcant, setidCant ] = useState();
-  const [ idDist, setidDist ] = useState();
-  const [ rsocial, setRsocial ] = useState();
-  const [ nfantasy, setNfantasy ] = useState();
-  const [ idcorreo, setIdcorreo ] = useState("NO INDICA");
-  const [ idaudio, setIdaudio ] = useState("NO INDICA");
+  const [agente, setAgente] = useState(cookies.get("info"));
+  const [pers, setPers] = useState([]);
+  const [comer, setComer] = useState([]);
+  const [userspe, setUserspe] = useState("NO APLICA");
+  const [usobser, setUsobser] = useState("NO APLICA");
+  const [idprov, setidProv] = useState();
+  const [idcant, setidCant] = useState();
+  const [idDist, setidDist] = useState();
+  const [rsocial, setRsocial] = useState();
+  const [nfantasy, setNfantasy] = useState();
+  const [idcorreo, setIdcorreo] = useState("NO INDICA");
+  const [idaudio, setIdaudio] = useState("NO INDICA");
 
-  const [ idMat, setidMat ] = useState();
-  const [ idAsu, setidAsu ] = useState();
-  const [ idBie, setidBie ] = useState();
-  const [ idNR, setidNR ] = useState();
+  const [idMat, setidMat] = useState();
+  const [idAsu, setidAsu] = useState();
+  const [idBie, setidBie] = useState();
+  const [idNR, setidNR] = useState();
 
   //#endregion useState Basicos
 
   //#region UseState de Imputs
   //useState del afectado
-  const [ telorigen, settelorigen ] = useState("NO INDICA");
-  const [ tdiA, settdiA ] = useState("");
-  const [ ndiA, setndiA ] = useState("");
-  const [ nombA, setnombA ] = useState("");
-  const [ apell1A, setapell1A ] = useState("");
-  const [ apell2A, setapell2A ] = useState("");
-  const [ tel, setTel ] = useState('');
-  const [ tel2, setTel2 ] = useState("0000-0000");
-  const [ email, setEmail ] = useState('');
-  const [ email2, setEmail2 ] = useState("NO INDICA");
-  const [ fchaHech, setfchaHech ] = useState("NO INDICA");
-  const [ fchaGar, setfchaGar ] = useState("NO INDICA");
-  const [ descH, setdescH ] = useState('');
-  const [ resp, setResp ] = useState('');
-  const [ ubProv, setubProv ] = useState();
-  const [ ubCant, setubCant ] = useState();
-  const [ ubDist, setubDist ] = useState();
-  const [ ubMat, setubMat ] = useState('');
-  const [ ubAsu, setubAsu ] = useState('');
-  const [ ubBie, setubBie ] = useState('');
+  const [telorigen, settelorigen] = useState("NO INDICA");
+  const [tdiA, settdiA] = useState("");
+  const [ndiA, setndiA] = useState("");
+  const [nombA, setnombA] = useState("");
+  const [apell1A, setapell1A] = useState("");
+  const [apell2A, setapell2A] = useState("");
+  const [tel, setTel] = useState("");
+  const [tel2, setTel2] = useState("0000-0000");
+  const [email, setEmail] = useState("");
+  const [email2, setEmail2] = useState("NO INDICA");
+  const [fchaHech, setfchaHech] = useState("NO INDICA");
+  const [fchaGar, setfchaGar] = useState("NO INDICA");
+  const [descH, setdescH] = useState("");
+  const [resp, setResp] = useState("");
+  const [ubProv, setubProv] = useState();
+  const [ubCant, setubCant] = useState();
+  const [ubDist, setubDist] = useState();
+  const [ubMat, setubMat] = useState("");
+  const [ubAsu, setubAsu] = useState("");
+  const [ubBie, setubBie] = useState("");
 
   //inputs del comerciante
-  const [ tdiC, settdiC ] = useState();
-  const [ ndiC, setndiC ] = useState();
-  const [ nombC, setnombC ] = useState('');
-  const [ apell1C, setapell1C ] = useState('');
-  const [ apell2C, setapell2C ] = useState('');
+  const [tdiC, settdiC] = useState();
+  const [ndiC, setndiC] = useState();
+  const [nombC, setnombC] = useState("");
+  const [apell1C, setapell1C] = useState("");
+  const [apell2C, setapell2C] = useState("");
   //const [ lblPHNombFantacy, setlblPHNombFantacy ] = useState()
-  const [ lblPHNombFantacyC, setlblPHNombFantacyC ] = useState();
+  const [lblPHNombFantacyC, setlblPHNombFantacyC] = useState();
 
   //useState para los Select
-  const [ selectNidA, setselectNidA ] = useState(0);
-  const [ selectNidC, setselectNidC ] = useState(0);
+  const [selectNidA, setselectNidA] = useState(0);
+  const [selectNidC, setselectNidC] = useState(0);
 
   //useState para los ckeckbox
-  const [ naemail2, setnaemail2 ] = useState();
+  const [naemail2, setnaemail2] = useState();
 
   //useState para modificar inputs
-  const [ dehabil, setdehabil ] = useState(false);
-  const [ dehabil2, setdehabil2 ] = useState(false);
-  const [ dehabiltel1, setdehabiltel1 ] = useState(false);
-  const [ dehabiltel2, setdehabiltel2 ] = useState(true);
-  const [ dehabilem1, setdehabilem1 ] = useState(false);
-  const [ dehabilem2, setdehabilem2 ] = useState(true);
-  const [ deshabProv, setdeshabProv ] = useState(false);
-  const [ deshabCant, setdeshabCant ] = useState(true);
-  const [ deshabDist, setdeshabDist ] = useState(true);
-  const [ dehabilndiC, setdehabilndiC ] = useState(false);
-  const [ deshabIdAudio, setdehabIdAudio ] = useState("d-none col-md-3");
-  const [ deshabIdCorreo, setdehabIdCorreo ] = useState("d-none col-md-3");
-  const [ dehabilnombC, setdehabilnombC ] = useState(false);
-  const [ dehabilapell1C, setdehabilapell1C ] = useState(false);
-  const [ dehabilapell2C, setdehabilapell2C ] = useState(false);
-  const [ deshabMateria, setdeshabMateria ] = useState(true);
-  const [ deshabAConsultado, setdeshabAConsultado ] = useState(true);
-  const [ deshabBien, setdeshabBien ] = useState(true);
-  const [ checktel2, setCheckTel2 ] = useState(true);
-  const [ checkem2, setCheckEm2 ] = useState(true);
-  const [ checktel1, setCheckTel1 ] = useState(false);
-  const [ checkem1, setCheckEm1 ] = useState(false);
+  const [dehabil, setdehabil] = useState(false);
+  const [dehabil2, setdehabil2] = useState(false);
+  const [dehabiltel1, setdehabiltel1] = useState(false);
+  const [dehabiltel2, setdehabiltel2] = useState(true);
+  const [dehabilem1, setdehabilem1] = useState(false);
+  const [dehabilem2, setdehabilem2] = useState(true);
+  const [deshabProv, setdeshabProv] = useState(false);
+  const [deshabCant, setdeshabCant] = useState(true);
+  const [deshabDist, setdeshabDist] = useState(true);
+  const [dehabilndiC, setdehabilndiC] = useState(false);
+  const [deshabIdAudio, setdehabIdAudio] = useState("d-none col-md-3");
+  const [deshabIdCorreo, setdehabIdCorreo] = useState("d-none col-md-3");
+  const [dehabilnombC, setdehabilnombC] = useState(false);
+  const [dehabilapell1C, setdehabilapell1C] = useState(false);
+  const [dehabilapell2C, setdehabilapell2C] = useState(false);
+  const [deshabMateria, setdeshabMateria] = useState(true);
+  const [deshabAConsultado, setdeshabAConsultado] = useState(true);
+  const [deshabBien, setdeshabBien] = useState(true);
+  const [checktel2, setCheckTel2] = useState(true);
+  const [checkem2, setCheckEm2] = useState(true);
+  const [checktel1, setCheckTel1] = useState(false);
+  const [checkem1, setCheckEm1] = useState(false);
   const [showCompanyNameC, setShowCompanyNameC] = useState(true);
   const [showCompanyNameA, setShowCompanyNameA] = useState(true);
 
-
   //useState para guardar datos de ubicacion
-  const [ provi, setProvi ] = useState(false);
-  const [ canto, setCanto ] = useState(false);
-  const [ distr, setDistr ] = useState(false);
+  const [provi, setProvi] = useState(false);
+  const [canto, setCanto] = useState(false);
+  const [distr, setDistr] = useState(false);
 
-  const [ mate, setMate ] = useState(false);
-  const [ asun, setAsun ] = useState(false);
-  const [ biens, setBiens ] = useState(false);
+  const [mate, setMate] = useState(false);
+  const [asun, setAsun] = useState(false);
+  const [biens, setBiens] = useState(false);
 
   //useState para solo lectura
-  const [ onlyRnombA, setonlyRnombA ] = useState(false);
-  const [ onlyRapell1A, setonlyRapell1A ] = useState(false);
-  const [ onlyRapell2A, setonlyRapell2A ] = useState(false);
-  const [ onlyRnombC, setonlyRnombC ] = useState(false);
-  const [ onlyRapell1C, setonlyRapell1C ] = useState(false);
-  const [ onlyRapell2C, setonlyRapell2C ] = useState(false);
+  const [onlyRnombA, setonlyRnombA] = useState(false);
+  const [onlyRapell1A, setonlyRapell1A] = useState(false);
+  const [onlyRapell2A, setonlyRapell2A] = useState(false);
+  const [onlyRnombC, setonlyRnombC] = useState(false);
+  const [onlyRapell1C, setonlyRapell1C] = useState(false);
+  const [onlyRapell2C, setonlyRapell2C] = useState(false);
 
   //useStaret para ocultar campos
 
-  const [ hiddentelObser, setHiddentelObser ] = useState("col-md-3 d-none");
-  const [ hiddentelorig, setHiddentelorig ] = useState("col-md-3 d-none");
-  const [ invisibleAp1, setinvisibleAp1 ] = useState("d-block col-md-4");
-  const [ invisibleAp2, setinvisibleAp2 ] = useState("d-block col-md-4");
-  const [ invisibleAp1C, setinvisibleAp1C ] = useState("d-block col-md-4");
-  const [ invisibleAp2C, setinvisibleAp2C ] = useState("d-block col-md-4");
-  const [ classdivnomb, setclassdivnomb ] = useState("col-md-4");
-  const [ classdivnombC, setclassdivnombC ] = useState("col-md-4");
-  const [ classdivDNI, setclassdivDNI ] = useState("col-md-4");
-  const [ classdivDNIC, setclassdivDNIC ] = useState("col-md-4");
+  const [hiddentelObser, setHiddentelObser] = useState("col-md-3 d-none");
+  const [hiddentelorig, setHiddentelorig] = useState("col-md-3 d-none");
+  const [invisibleAp1, setinvisibleAp1] = useState("d-block col-md-4");
+  const [invisibleAp2, setinvisibleAp2] = useState("d-block col-md-4");
+  const [invisibleAp1C, setinvisibleAp1C] = useState("d-block col-md-4");
+  const [invisibleAp2C, setinvisibleAp2C] = useState("d-block col-md-4");
+  const [classdivnomb, setclassdivnomb] = useState("col-md-4");
+  const [classdivnombC, setclassdivnombC] = useState("col-md-4");
+  const [classdivDNI, setclassdivDNI] = useState("col-md-4");
+  const [classdivDNIC, setclassdivDNIC] = useState("col-md-4");
 
   //useState para validar campos
-  const [ dehabilSubmit, setdehabilSubmit ] = useState(true);
-  const [ lblinputName, setlblinputName ] = useState("Nombre");
-  const [ fbNameA, setfbNameA ] = useState("Por favor, ingrese su nombre.");
-  const [ fbNameC, setfbNameC ] = useState(
+  const [dehabilSubmit, setdehabilSubmit] = useState(true);
+  const [camposDeshabilitados, setCamposDeshabilitados] = useState(false);
+  const [lblinputName, setlblinputName] = useState("Nombre");
+  const [fbNameA, setfbNameA] = useState("Por favor, ingrese su nombre.");
+  const [fbNameC, setfbNameC] = useState(
     "Por favor, ingrese el nombre del comerciante."
   );
-  const [ lblinputNameC, setlblinputNameC ] = useState("Nombre");
-  const [ lblapell1A, setlblapell1A ] = useState("Primer Apellido");
-  const [ fbApell1A, setfbapell1A ] = useState(
+  const [lblinputNameC, setlblinputNameC] = useState("Nombre");
+  const [lblapell1A, setlblapell1A] = useState("Primer Apellido");
+  const [fbApell1A, setfbapell1A] = useState(
     "Por favor, ingrese su primer apellido."
   );
-  const [ fbApell1C, setfbapell1C ] = useState(
+  const [fbApell1C, setfbapell1C] = useState(
     "Por favor, ingrese el primer apellido del comerciante."
   );
-  const [ lblapell1C, setlblapell1C ] = useState("Primer Apellido");
-  const [ idclValid, setidClValid ] = useState("");
-  const [ nclValid, setnClValid ] = useState("");
-  const [ nclValidC, setnClValidC ] = useState("");
-  const [ paclValid, setpaClValid ] = useState("");
-  const [ saclValid, setsaClValid ] = useState("");
-  const [ paclValidC, setpaClValidC ] = useState("");
-  const [ saclValidC, setsaClValidC ] = useState("");
-  const [ emclValid, setemClValid ] = useState("");
-  const [ emclValid2, setemClValid2 ] = useState("");
-  const [ tlclValid, settlClValid ] = useState("");  
-  const [ tlclValid1, settlClValid1 ] = useState("");
-  const [ tlclValid2, settlClValid2 ] = useState("");
-  const [ idclValidC, setidClValidC ] = useState("");
-  const [ fhHValidC, setfhHValidC ] = useState("");
-  const [ fgValidC, setfgValidC ] = useState("");
-  const [ dhClValid, setdhClValid ] = useState("");
-  const [ respClValid, setRespClValid ] = useState("");
+  const [lblapell1C, setlblapell1C] = useState("Primer Apellido");
+  const [idclValid, setidClValid] = useState("");
+  const [nclValid, setnClValid] = useState("");
+  const [nclValidC, setnClValidC] = useState("");
+  const [paclValid, setpaClValid] = useState("");
+  const [saclValid, setsaClValid] = useState("");
+  const [paclValidC, setpaClValidC] = useState("");
+  const [saclValidC, setsaClValidC] = useState("");
+  const [emclValid, setemClValid] = useState("");
+  const [emclValid2, setemClValid2] = useState("");
+  const [tlclValid, settlClValid] = useState("");
+  const [tlclValid1, settlClValid1] = useState("");
+  const [tlclValid2, settlClValid2] = useState("");
+  const [idclValidC, setidClValidC] = useState("");
+  const [fhHValidC, setfhHValidC] = useState("");
+  const [fgValidC, setfgValidC] = useState("");
+  const [dhClValid, setdhClValid] = useState("");
+  const [respClValid, setRespClValid] = useState("");
   //#endregion UseState de Imputs
   //#endregion
 
@@ -260,15 +250,15 @@ const CompFormpres = () => {
   const EnviarDatos = async (v) => {
     let fecha = new Date().toLocaleString();
     let fchareg = fecha;
-    setFchareg(fecha)
+    setFchareg(fecha);
 
     if (v === 1) {
-      console.log("EnviarDatos se llama de forma reciproca")          
-    }else{
+      console.log("EnviarDatos se llama de forma reciproca");
+    } else {
       console.log("Se procede a guardar los datos");
     }
-    
-    var nagente = cookies.get('info')
+
+    var nagente = cookies.get("info");
     let headersList = {
       Accept: "*/*",
       //"User-Agent": "Thunder Client (https://www.thunderclient.com)",
@@ -276,9 +266,9 @@ const CompFormpres = () => {
     };
 
     if (!nReporte) {
-      console.log("nReporte esta null")
-      console.log(nReporte)
-      NextRegister()      
+      console.log("nReporte esta null");
+      console.log(nReporte);
+      NextRegister();
     } else {
       let bodyContent = JSON.stringify({
         id_report: ++nReporte,
@@ -317,25 +307,26 @@ const CompFormpres = () => {
         id_correo: idcorreo,
       });
 
-      console.log(bodyContent)
+      console.log(bodyContent);
       let reqOptions = {
         url: "https://fwmback-production.up.railway.app/asepress",
         method: "POST",
         headers: headersList,
         data: bodyContent,
-      }
+      };
 
       let response = await axios.request(reqOptions);
-      if (response.data.status === 400 || response.data.message === 'Validation error') {
-        console.log(nReporte)  
-        console.log("no se guardo el dato.")
-        EnviarDatos(1)
+      if (
+        response.data.status === 400 ||
+        response.data.message === "Validation error"
+      ) {
+        console.log(nReporte);
+        console.log("no se guardo el dato.");
+        EnviarDatos(1);
       } else {
-        console.log(response)
+        console.log(response);
         alert("Registro Creado Correctamente....");
-        NextRegister()
-        window.location.reload()
-        window.scrollTo(0, 0);
+        NextRegister();
       }
     }
   };
@@ -343,38 +334,59 @@ const CompFormpres = () => {
   //Validacion de formulario antes de enviar correo
   const validarbtnSubmit = (e) => {
     e.preventDefault();
-    NextRegister()
+    NextRegister();
     const NR = 1;
     if (NR != null) {
       if (
-        (telorigen != "" && telorigen != " ") &&
-        (agente != "" && agente != " ") &&
-        (usobser != "" && usobser != " ") &&
-        (ndiA != "" && ndiA != " ") &&
-        (nombA != "" && nombA != " ") &&
-        (apell1A != "" && apell1A != " ") &&
-        (apell2A != "" && apell2A != " ") &&
-        (email2 != "" && email2 != " ") &&
-        (email != "" && email != " ") &&
-        (tel != "" && tel != " ") &&
-        (tel2 != "" && tel2 != " ") &&
-        (fchaHech != "" && fchaHech != " ") &&
-        (fchaGar != "" && fchaGar != " ") &&
-        (prov != false) &&
-        (cant != false) &&
-        (distr != false) &&
-        (ubMat != '') &&
-        (ubAsu != '') &&
-        (ubBie != '') &&
-        (tdiC != null && tdiC != " ") &&
-        (ndiC != null && ndiC != " ") &&
-        (nombC != "" && nombC != " ") &&
-        (apell1C != "" && apell1C != " ") &&
-        (apell2C != "" && apell2C != " ") &&
-        (descH != "" && descH != " ") &&
-        (resp != "" && resp != " ")
+        telorigen != "" &&
+        telorigen != " " &&
+        agente != "" &&
+        agente != " " &&
+        usobser != "" &&
+        usobser != " " &&
+        ndiA != "" &&
+        ndiA != " " &&
+        nombA != "" &&
+        nombA != " " &&
+        apell1A != "" &&
+        apell1A != " " &&
+        apell2A != "" &&
+        apell2A != " " &&
+        email2 != "" &&
+        email2 != " " &&
+        email != "" &&
+        email != " " &&
+        tel != "" &&
+        tel != " " &&
+        tel2 != "" &&
+        tel2 != " " &&
+        fchaHech != "" &&
+        fchaHech != " " &&
+        fchaGar != "" &&
+        fchaGar != " " &&
+        prov != false &&
+        cant != false &&
+        distr != false &&
+        ubMat != "" &&
+        ubAsu != "" &&
+        ubBie != "" &&
+        tdiC != null &&
+        tdiC != " " &&
+        ndiC != null &&
+        ndiC != " " &&
+        nombC != "" &&
+        nombC != " " &&
+        apell1C != "" &&
+        apell1C != " " &&
+        apell2C != "" &&
+        apell2C != " " &&
+        descH != "" &&
+        descH != " " &&
+        resp != "" &&
+        resp != " "
       ) {
-        setdehabilSubmit(true)
+        setdehabilSubmit(true);
+        desactivarCampos();
         EnviarDatos();
       } else {
         alert("faltan datos");
@@ -384,86 +396,86 @@ const CompFormpres = () => {
     }
   };
   function limpiardatosA() {
-    setndiA('')
-    setnombA("")
-    setapell1A("")
-    setapell2A("")
-    setidClValid('')
-    setnClValid('')
-    setpaClValid('')
-    setsaClValid('')
-}
+    setndiA("");
+    setnombA("");
+    setapell1A("");
+    setapell2A("");
+    setidClValid("");
+    setnClValid("");
+    setpaClValid("");
+    setsaClValid("");
+  }
 
-function limpiardatosC() {
-    setndiC('')
-    setnombC("")
-    setapell1C("")
-    setapell2C("")
-    setidClValidC('')
-    setnClValidC('')
-    setpaClValidC('')
-    setsaClValidC('')
-}
+  function limpiardatosC() {
+    setndiC("");
+    setnombC("");
+    setapell1C("");
+    setapell2C("");
+    setidClValidC("");
+    setnClValidC("");
+    setpaClValidC("");
+    setsaClValidC("");
+  }
 
   function cleanForm() {
-    limpiardatosA()
-    setEmail('')
-    setEmail2('')
-    setTel('')
-    setTel2('')
-    setubProv('')
-    setubCant('')
-    setdeshabCant(true)
-    setubDist('')
-    setdeshabDist(true)
-    setubMat('')
-    setubAsu('')
-    setdeshabAConsultado(true)
-    setubBie('')
-    setdeshabBien(true)
-    setRsocial('')
-    setNfantasy('')
-    limpiardatosC()
-    setdescH('')
-    setResp('')
+    limpiardatosA();
+    setEmail("");
+    setEmail2("");
+    setTel("");
+    setTel2("");
+    setubProv("");
+    setubCant("");
+    setdeshabCant(true);
+    setubDist("");
+    setdeshabDist(true);
+    setubMat("");
+    setubAsu("");
+    setdeshabAConsultado(true);
+    setubBie("");
+    setdeshabBien(true);
+    setRsocial("");
+    setNfantasy("");
+    limpiardatosC();
+    setdescH("");
+    setResp("");
   }
 
   const OrigenChange = (e) => {
     let valor = e.target.selectedIndex;
-    let oreg = e.target.options[ valor ].text;
+    let oreg = e.target.options[valor].text;
     setoRegistro(oreg);
 
     switch (valor) {
       case 0:
         setHiddentelorig("d-none");
-        setdehabIdCorreo("d-none")
-        setdehabIdAudio("d-none")
-        setIdcorreo("NO INDICA")
-        setIdaudio("NO INDICA")
+        setdehabIdCorreo("d-none");
+        setdehabIdAudio("d-none");
+        setIdcorreo("NO INDICA");
+        setIdaudio("NO INDICA");
         break;
 
       case 1:
         setHiddentelorig("d-block col-md-3");
-        setdehabIdAudio("d-block col-md-3")
-        settoRegistro('')
-        setIdaudio('')
-        setIdcorreo("NO INDICA")
-        setdehabIdCorreo("d-none")
+        setdehabIdAudio("d-block col-md-3");
+        settoRegistro("");
+        setIdaudio("");
+        setIdcorreo("NO INDICA");
+        setdehabIdCorreo("d-none");
         break;
 
       case 2:
         setHiddentelorig("d-none");
-        setdehabIdAudio("d-none")
-        setdehabIdCorreo("d-block col-md-3")
-        setIdcorreo("")
-        setIdaudio("NO INDICA")
+        setdehabIdAudio("d-none");
+        setdehabIdCorreo("d-block col-md-3");
+        setIdcorreo("");
+        setIdaudio("NO INDICA");
         break;
     }
   };
 
   const UsSpeChange = (e) => {
     let valor = e.target.selectedIndex;
-    let estReg = e.target.options[ valor ].text;
+    let estReg = e.target.options[valor].text;
     setUserspe(estReg);
 
     switch (valor) {
@@ -482,15 +494,15 @@ function limpiardatosC() {
   };
 
   const input_TIDchange = (val, tID) => {
-    setselectNidA(val)
-    const valor = val
-    settdiA(tID)
-    limpiardatosA()
+    setselectNidA(val);
+    const valor = val;
+    settdiA(tID);
+    limpiardatosA();
 
     switch (valor) {
       case 1:
         setShowCompanyNameA(true);
-        limpiardatosA()
+        limpiardatosA();
         setlblinputName("Nombre");
         setlblapell1A("Primer Apellido");
         setfbNameA("Por favor, ingrese su nombre.");
@@ -499,11 +511,11 @@ function limpiardatosC() {
         setclassdivDNI("col-md-4");
         setinvisibleAp1("d-block col-md-4");
         setinvisibleAp2("d-block col-md-4");
-        limpiardatosA()
+        limpiardatosA();
         break;
 
       case 2:
-        limpiardatosA()
+        limpiardatosA();
         setlblinputName("Nombre");
         setlblapell1A("Primer Apellido");
         setfbNameA("Por favor, ingrese su nombre.");
@@ -512,11 +524,11 @@ function limpiardatosC() {
         setinvisibleAp2("d-block col-md-4");
         setclassdivnomb("col-md-4");
         setclassdivDNI("col-md-4");
-        limpiardatosA()
+        limpiardatosA();
         break;
 
       case 3:
-        limpiardatosA()
+        limpiardatosA();
         setlblinputName("Nombre de Fantasía (Opcional)");
         setinvisibleAp1("d-none col-md-1");
         setinvisibleAp2("d-none col-md-1");
@@ -526,11 +538,11 @@ function limpiardatosC() {
         setapell2A("NO INDICA");
         setclassdivnomb("col-md-5");
         setclassdivDNI("col-md-3");
-        limpiardatosA()
+        limpiardatosA();
         break;
 
       case 4:
-        limpiardatosA()
+        limpiardatosA();
         setlblinputName("Nombre");
         setlblapell1A("Primer Apellido");
         setfbNameA("Por favor, ingrese su nombre.");
@@ -539,20 +551,20 @@ function limpiardatosC() {
         setinvisibleAp2("d-block col-md-4");
         setclassdivnomb("col-md-4");
         setclassdivDNI("col-md-4");
-        limpiardatosA()
+        limpiardatosA();
         break;
     }
-}
+  };
 
-const input_TIDCchange = (val, tID) => {
-    setselectNidC(val)
-    settdiC(tID)
-    const valor = val
+  const input_TIDCchange = (val, tID) => {
+    setselectNidC(val);
+    settdiC(tID);
+    const valor = val;
 
     switch (valor) {
       case 1:
         setShowCompanyNameC(true);
-        limpiardatosC()
+        limpiardatosC();
         setlblinputNameC("Nombre");
         setlblapell1C("Primer Apellido");
         setfbNameC("Por favor, ingrese su nombre.");
@@ -562,11 +574,11 @@ const input_TIDCchange = (val, tID) => {
         setinvisibleAp1C("d-block col-md-4");
         setinvisibleAp2C("d-block col-md-4");
         setlblPHNombFantacyC("");
-        limpiardatosC()
+        limpiardatosC();
         break;
 
       case 2:
-        limpiardatosC()
+        limpiardatosC();
         setlblinputNameC("Nombre");
         setlblapell1C("Primer Apellido");
         setfbNameC("Por favor, ingrese su nombre.");
@@ -576,11 +588,11 @@ const input_TIDCchange = (val, tID) => {
         setclassdivnombC("col-md-4");
         setclassdivDNIC("col-md-4 d-block");
         setlblPHNombFantacyC("");
-        limpiardatosC()
+        limpiardatosC();
         break;
 
       case 3:
-        limpiardatosC()
+        limpiardatosC();
         setlblinputNameC("Nombre de Fantasía (Opcional)");
         setfbNameC("");
         setfbapell1C("");
@@ -588,8 +600,8 @@ const input_TIDCchange = (val, tID) => {
         setinvisibleAp2C("d-none col-md-1");
         setapell1C("NO INDICA");
         setapell2C("NO INDICA");
-        setnombC('')
-        setndiC('')
+        setnombC("");
+        setndiC("");
         setclassdivnombC("col-md-5");
         setclassdivDNIC("col-md-3 d-block");
         setlblPHNombFantacyC(
@@ -598,7 +610,7 @@ const input_TIDCchange = (val, tID) => {
         break;
 
       case 4:
-        limpiardatosC()
+        limpiardatosC();
         setlblinputNameC("Nombre");
         setlblapell1C("Primer Apellido");
         setfbNameC("Por favor, ingrese su nombre.");
@@ -608,20 +620,22 @@ const input_TIDCchange = (val, tID) => {
         setclassdivnombC("col-md-4");
         setclassdivDNIC("col-md-4 d-block");
         setlblPHNombFantacyC("");
-        limpiardatosC()
+        limpiardatosC();
         break;
 
       case 5:
         setShowCompanyNameC(true);
-        limpiardatosC()
-        setlblinputNameC("Nombre de Fantasía (Opcional) Nota: si no se da el dato digitar 'No indica'.");
+        limpiardatosC();
+        setlblinputNameC(
+          "Nombre de Fantasía (Opcional) Nota: si no se da el dato digitar 'No indica'."
+        );
         setlblapell1C("");
         setfbNameC("");
         setfbapell1C("");
         setndiC("0000000000");
         setapell1C("NO INDICA");
         setapell2C("NO INDICA");
-        setNfantasy("NO INDICA")
+        setNfantasy("NO INDICA");
         setinvisibleAp1C("d-none col-md-2");
         setinvisibleAp2C("d-none col-md-2");
         setclassdivnombC("col-md-8");
@@ -629,9 +643,8 @@ const input_TIDCchange = (val, tID) => {
         setlblPHNombFantacyC("");
         break;
     }
-}
+  };
   //#endregion
-
 
   //#region Validaciones de input
 
@@ -642,48 +655,48 @@ const input_TIDCchange = (val, tID) => {
         setEmail2("NO INDICA");
         setdehabilem2(true);
         setemClValid2("");
-        setCheckEm2(true)
+        setCheckEm2(true);
       } else {
         setEmail2("");
         setdehabilem2(false);
         setemClValid2("");
-        setCheckEm2(false)
+        setCheckEm2(false);
       }
     } else if (ub === 2) {
       if (val?.target.checked) {
         setTel2("0000-0000");
         setdehabiltel2(true);
         settlClValid2("");
-        setCheckTel2(true)
+        setCheckTel2(true);
       } else {
         setTel2("");
         setdehabiltel2(false);
         settlClValid2("");
-        setCheckTel2(false)
+        setCheckTel2(false);
       }
-    }else if (ub === 3) {
+    } else if (ub === 3) {
       if (val?.target.checked) {
         setEmail("NO INDICA");
         setdehabilem1(true);
         setemClValid("");
-        setCheckEm1(true)
+        setCheckEm1(true);
       } else {
         setEmail("");
         setdehabilem1(false);
         setemClValid("");
-        setCheckEm1(false)
+        setCheckEm1(false);
       }
     } else if (ub === 4) {
       if (val?.target.checked) {
         setTel("0000-0000");
         setdehabiltel1(true);
         settlClValid1("");
-        setCheckTel1(true)
+        setCheckTel1(true);
       } else {
         setTel("");
         setdehabiltel1(false);
         settlClValid1("");
-        setCheckTel1(false)
+        setCheckTel1(false);
       }
     }
   };
@@ -785,7 +798,7 @@ const input_TIDCchange = (val, tID) => {
 
   const validarFchHyGar = (val) => {
     let index = val.target.selectedIndex;
-    let fcgar = val.target.options[ index ].text;
+    let fcgar = val.target.options[index].text;
     setfchaGar(fcgar);
 
     if (fchaGar.length != 0) {
@@ -811,13 +824,27 @@ const input_TIDCchange = (val, tID) => {
 
   //Validacion campo nombre
   const ValidarinputNomb = (val, ced) => {
-    const valor = val
-    setnombA(valor)
+    const valor = val;
+    setnombA(valor);
     if (lblinputName == "Nombre") {
-        const Ced = (ced == 1) ? ndiA : ced
-        setnombA(valor)
-        if (valor?.toString().length >= 1) {
-          let resp;
+      const Ced = ced == 1 ? ndiA : ced;
+      setnombA(valor);
+      if (valor?.toString().length >= 1) {
+        let resp;
+        if (ced === 1) {
+          resp = validarText(valor);
+        } else if (Ced.toString().length === 9) {
+          resp = validarText(valor);
+        } else if (Ced.toString().length === 10) {
+          resp = validarTextEsp(valor);
+        } else if (Ced.toString().length === 12 || selectNidA === 4) {
+          resp = validarText(valor);
+        }
+
+        if (resp) {
+          setnClValid("is-valid");
+        } else if (valor?.toString().length >= 1) {
+          const resp = validarText(valor);
           if (ced === 1) {
             resp = validarText(valor);
           } else if (Ced.toString().length === 9) {
@@ -827,31 +854,17 @@ const input_TIDCchange = (val, tID) => {
           } else if (Ced.toString().length === 12 || selectNidA === 4) {
             resp = validarText(valor);
           }
-  
           if (resp) {
             setnClValid("is-valid");
-          } else if(valor?.toString().length >= 1){
-            const resp = validarText(valor);
-            if (ced === 1) {
-              resp = validarText(valor);
-            } else if (Ced.toString().length === 9) {
-              resp = validarText(valor);
-            } else if (Ced.toString().length === 10) {
-              resp = validarTextEsp(valor);
-            } else if (Ced.toString().length === 12 || selectNidA === 4) {
-              resp = validarText(valor);
-            }
-            if (resp) {
-              setnClValid("is-valid");
-            } else {
-              setnClValid("is-invalid");
-            }
-          }else {
+          } else {
             setnClValid("is-invalid");
           }
         } else {
           setnClValid("is-invalid");
         }
+      } else {
+        setnClValid("is-invalid");
+      }
     } else if (
       lblinputName === "Nombre de Empresa o institucion" ||
       lblinputName === "Nombre de Fantasía (Opcional)"
@@ -873,68 +886,54 @@ const input_TIDCchange = (val, tID) => {
         setnClValid("is-invalid");
       }
     }
-}
+  };
 
-const ValidarinputApp1 = (val) => {
-    const valor = val
-    setapell1A(valor)
-    if (lblapell1A != 'Nombre de Fantasía (Opcional)') {
-        if (val?.toString().length >= 1) {
-            const resp = validarText(valor)
-            if (resp) {
-                setpaClValid('is-valid')
-            } else {
-                setpaClValid('is-invalid')
-            }
+  const ValidarinputApp1 = (val) => {
+    const valor = val;
+    setapell1A(valor);
+    if (lblapell1A != "Nombre de Fantasía (Opcional)") {
+      if (val?.toString().length >= 1) {
+        const resp = validarText(valor);
+        if (resp) {
+          setpaClValid("is-valid");
         } else {
-            setpaClValid('is-invalid')
+          setpaClValid("is-invalid");
         }
+      } else {
+        setpaClValid("is-invalid");
+      }
     }
-}
+  };
 
-const ValidarinputApp2 = (val) => {
-    const valor = val
-    console.log(val)
-    setapell2A(valor)
-    if (lblapell1A != 'Nombre de Fantasía (Opcional)') {
-        if (val?.toString().length >= 1) {
-            const resp = validarText(valor.trimEnd())
-            console.log(valor, resp)
-            if (resp) {
-                setsaClValid('is-valid')
-            } else {
-                setsaClValid('is-invalid')
-            }
+  const ValidarinputApp2 = (val) => {
+    const valor = val;
+    console.log(val);
+    setapell2A(valor);
+    if (lblapell1A != "Nombre de Fantasía (Opcional)") {
+      if (val?.toString().length >= 1) {
+        const resp = validarText(valor.trimEnd());
+        console.log(valor, resp);
+        if (resp) {
+          setsaClValid("is-valid");
         } else {
-            setsaClValid('is-invalid')
+          setsaClValid("is-invalid");
         }
+      } else {
+        setsaClValid("is-invalid");
+      }
     }
-}
+  };
 
-const ValidarinputNombC = (val, ced) => {
-  const valor = val;
-  setnombC(valor);
-  setRsocial(valor);
-  if (lblinputNameC === "Nombre") {
-    const Ced = ced === 2 ? ndiC : ced;
+  const ValidarinputNombC = (val, ced) => {
+    const valor = val;
     setnombC(valor);
     setRsocial(valor);
-    if (valor?.toString().length >= 1) {
-      let resp;
-      if (ced === 2) {
-        resp = validarText(valor);
-      } else if (Ced.toString().length === 9) {
-        resp = validarText(valor);
-      } else if (Ced.toString().length === 10) {
-        resp = validarTextEsp(valor);
-      } else if (Ced.toString().length === 12 || selectNidC === 4) {
-        resp = validarText(valor);
-      }
-
-      if (resp) {
-        setnClValidC("is-valid");
-      } else if(valor?.toString().length >= 1){
-        const resp = validarText(valor);
+    if (lblinputNameC === "Nombre") {
+      const Ced = ced === 2 ? ndiC : ced;
+      setnombC(valor);
+      setRsocial(valor);
+      if (valor?.toString().length >= 1) {
+        let resp;
         if (ced === 2) {
           resp = validarText(valor);
         } else if (Ced.toString().length === 9) {
@@ -944,244 +943,261 @@ const ValidarinputNombC = (val, ced) => {
         } else if (Ced.toString().length === 12 || selectNidC === 4) {
           resp = validarText(valor);
         }
+
         if (resp) {
           setnClValidC("is-valid");
+        } else if (valor?.toString().length >= 1) {
+          const resp = validarText(valor);
+          if (ced === 2) {
+            resp = validarText(valor);
+          } else if (Ced.toString().length === 9) {
+            resp = validarText(valor);
+          } else if (Ced.toString().length === 10) {
+            resp = validarTextEsp(valor);
+          } else if (Ced.toString().length === 12 || selectNidC === 4) {
+            resp = validarText(valor);
+          }
+          if (resp) {
+            setnClValidC("is-valid");
+          } else {
+            setnClValidC("is-invalid");
+          }
         } else {
           setnClValidC("is-invalid");
         }
-      }else {
-        setnClValidC("is-invalid");
-      }
-    } else {
-      setnClValidC("is-invalid");
-    }
-  } else if (
-    lblinputNameC == "Nombre de Empresa o institucion" ||
-    lblinputNameC == "Nombre de Fantasía (Opcional)" && tdiC != 'NO INDICA'
-  ) {
-    const valor = val;
-    const Ced = ced === 2 ? ndiC : ced;
-    setnombC(valor);
-    if (valor?.toString().length >= 0) {
-      if (Ced.toString().length == 10) {
-        const resp = validarTextEsp(valor);
-        if (resp) {
-          setnClValidC("is-valid");
-        } else {
-          setnClValidC("is-invalid");
-        }
-      }
-      else if(valor.toString().length >= 1) {
-        const resp = validarTextEsp(valor);
-        if (resp) {
-          setnClValidC("is-valid");
-        } else {
-          setnClValidC("is-invalid");
-        }
-      }
-    } else {
-      setnClValidC("is-invalid");
-    }
-  } else if (lblinputNameC == "Nombre de Fantasía (Opcional) Nota: si no se da el dato digitar 'No indica'." && tdiC === 'NO INDICA') {
-    const valor = val;
-    setnombC(valor);
-    setRsocial(valor)
-    if (valor.toString().length >= 1) {
-      const resp = validarTextEsp(valor);
-      if (resp) {
-        setnClValidC("is-valid");
       } else {
         setnClValidC("is-invalid");
       }
-    } else {
-      setnClValidC("is-invalid");
-    }
-  }
-}
-
-const ValidarinputApp1C = (val) => {
-    const valor = val
-    setapell1C(valor)
-    console.log(valor)
-    if (lblapell1C != 'Nombre de Fantasía (Opcional)') {
-        if (val?.toString().length >= 1) {
-            const resp = validarText(val)
-            if (resp) {
-                setpaClValidC('is-valid')
-            } else {
-                setpaClValidC('is-invalid')
-            }
-        } else {
-            setpaClValidC('is-invalid')
+    } else if (
+      lblinputNameC == "Nombre de Empresa o institucion" ||
+      (lblinputNameC == "Nombre de Fantasía (Opcional)" && tdiC != "NO INDICA")
+    ) {
+      const valor = val;
+      const Ced = ced === 2 ? ndiC : ced;
+      setnombC(valor);
+      if (valor?.toString().length >= 0) {
+        if (Ced.toString().length == 10) {
+          const resp = validarTextEsp(valor);
+          if (resp) {
+            setnClValidC("is-valid");
+          } else {
+            setnClValidC("is-invalid");
+          }
+        } else if (valor.toString().length >= 1) {
+          const resp = validarTextEsp(valor);
+          if (resp) {
+            setnClValidC("is-valid");
+          } else {
+            setnClValidC("is-invalid");
+          }
         }
-    }
-}
-
-const ValidarinputApp2C = (val) => {
-    const valor = val
-    setapell2C(valor)
-    if (val?.toString().length >= 1) {
-        const resp = validarText(valor.trimEnd())
+      } else {
+        setnClValidC("is-invalid");
+      }
+    } else if (
+      lblinputNameC ==
+        "Nombre de Fantasía (Opcional) Nota: si no se da el dato digitar 'No indica'." &&
+      tdiC === "NO INDICA"
+    ) {
+      const valor = val;
+      setnombC(valor);
+      setRsocial(valor);
+      if (valor.toString().length >= 1) {
+        const resp = validarTextEsp(valor);
         if (resp) {
-            setsaClValidC('is-valid')
+          setnClValidC("is-valid");
         } else {
-            setsaClValidC('is-invalid')
+          setnClValidC("is-invalid");
         }
-    } else {
-        setsaClValidC('is-invalid')
+      } else {
+        setnClValidC("is-invalid");
+      }
     }
-}
+  };
 
-const ValidarinputHecho = (val) => {
-    const valor = val
-    setdescH(valor)
-    console.log(valor)
+  const ValidarinputApp1C = (val) => {
+    const valor = val;
+    setapell1C(valor);
+    console.log(valor);
+    if (lblapell1C != "Nombre de Fantasía (Opcional)") {
+      if (val?.toString().length >= 1) {
+        const resp = validarText(val);
+        if (resp) {
+          setpaClValidC("is-valid");
+        } else {
+          setpaClValidC("is-invalid");
+        }
+      } else {
+        setpaClValidC("is-invalid");
+      }
+    }
+  };
+
+  const ValidarinputApp2C = (val) => {
+    const valor = val;
+    setapell2C(valor);
+    if (val?.toString().length >= 1) {
+      const resp = validarText(valor.trimEnd());
+      if (resp) {
+        setsaClValidC("is-valid");
+      } else {
+        setsaClValidC("is-invalid");
+      }
+    } else {
+      setsaClValidC("is-invalid");
+    }
+  };
+
+  const ValidarinputHecho = (val) => {
+    const valor = val;
+    setdescH(valor);
+    console.log(valor);
 
     if (val.toString().length >= 0) {
-        setdhClValid('is-valid')
-        setdehabilSubmit(false)
+      setdhClValid("is-valid");
+      setdehabilSubmit(false);
     } else {
-        setdhClValid('is-invalid')
+      setdhClValid("is-invalid");
     }
-}
+  };
 
-const ValidarinputResp = (val) => {
-  const valor = val.trimStart();
-  setResp(valor);
+  const ValidarinputResp = (val) => {
+    const valor = val.trimStart();
+    setResp(valor);
 
-  setNfantasy(apell1C);
+    setNfantasy(apell1C);
 
-  if (val.toString().length >= 0 && val != ' ') {
-    setRespClValid("is-valid");
-    setdehabilSubmit(false);
-  } else {
-    setRespClValid("is-invalid");
-  }
-};
-
-//Validacion del campo inputCed del afectado
-const validarInputCedA = (val, ub) => {
-  const valor = val;
-  setndiA(valor);
-  if (ub == 1) {
-    if (selectNidA === 1) {
-      const resp = /^[0-9]{9}$/.test(valor);
-      if (resp && valor.toString().length === 9) {
-        setidClValid("is-valid");
-        cargarDatosP(val, ub);
-      } else {
-        setidClValid("is-invalid");
-        setnClValid("");
-        setpaClValid("");
-        setsaClValid("");
-        setnombA("");
-        setapell1A("");
-        setapell2A("");
-        document.getElementById("errorCed").innerHTML = "";
-      }
-    } else if (selectNidA === 2) {
-      const resp = /^[a-zA-Z0-9]{9}$/.test(val);
-      if (resp && valor.toString().length === 9) {
-        setidClValid("is-valid");
-      } else {
-        setnombA("");
-        setapell1A("");
-        setapell2A("");
-        document.getElementById("errorCed").innerHTML = "";
-      }
-    } else if (selectNidA === 3) {
-      const resp = /^[a-zA-Z0-9]{10}$/.test(val);
-      if (resp && valor.toString().length === 10) {
-        setidClValid("is-valid");
-        cargarDatosC(valor, 1);
-      } else {
-        setidClValid("is-invalid");
-        setnClValid("is-invalid");
-        setsaClValid("is-invalid");
-        setnombA("");
-        setapell1A("");
-        setapell2A("");
-        document.getElementById("errorCed").innerHTML = "";
-      }
-    } else if (selectNidA === 4) {
-      const resp = /^[0-9]{12}$/.test(valor);
-      if (resp && valor.toString().length === 12) {
-        setidClValid("is-valid");
-      } else {
-        setidClValid("is-invalid");
-        setnombA("");
-        setapell1A("");
-        setapell2A("");
-        document.getElementById("errorCed").innerHTML = "";
-      }
+    if (val.toString().length >= 0 && val != " ") {
+      setRespClValid("is-valid");
+      setdehabilSubmit(false);
+    } else {
+      setRespClValid("is-invalid");
     }
-  } else if (ub == 2) {
-    cargarDatosC(val, ub);
-  }
-};
+  };
 
-//Validacion del campo inputCed del comerciante
-const validarInputCedC = (val, ub) => {
-  const valor = val;
-  setndiC(valor);
-  console.log(val, ub, selectNidC)
-  if (ub == 2) {
-    if (selectNidC === 1) {
-      const resp = /^[0-9]{9}$/.test(valor);
-      if (resp && valor.toString().length === 9) {
-        setidClValidC("is-valid");
-        cargarDatosP(val, ub);
-      } else {
-        setidClValidC("is-invalid");
-        setnClValidC("");
-        setpaClValidC("");
-        setsaClValidC("");
-        setnombC("");
-        setapell1C("");
-        setapell2C("");
-        document.getElementById("errorCedC").innerHTML = "";
+  //Validacion del campo inputCed del afectado
+  const validarInputCedA = (val, ub) => {
+    const valor = val;
+    setndiA(valor);
+    if (ub == 1) {
+      if (selectNidA === 1) {
+        const resp = /^[0-9]{9}$/.test(valor);
+        if (resp && valor.toString().length === 9) {
+          setidClValid("is-valid");
+          cargarDatosP(val, ub);
+        } else {
+          setidClValid("is-invalid");
+          setnClValid("");
+          setpaClValid("");
+          setsaClValid("");
+          setnombA("");
+          setapell1A("");
+          setapell2A("");
+          document.getElementById("errorCed").innerHTML = "";
+        }
+      } else if (selectNidA === 2) {
+        const resp = /^[a-zA-Z0-9]{9}$/.test(val);
+        if (resp && valor.toString().length === 9) {
+          setidClValid("is-valid");
+        } else {
+          setnombA("");
+          setapell1A("");
+          setapell2A("");
+          document.getElementById("errorCed").innerHTML = "";
+        }
+      } else if (selectNidA === 3) {
+        const resp = /^[a-zA-Z0-9]{10}$/.test(val);
+        if (resp && valor.toString().length === 10) {
+          setidClValid("is-valid");
+          cargarDatosC(valor, 1);
+        } else {
+          setidClValid("is-invalid");
+          setnClValid("is-invalid");
+          setsaClValid("is-invalid");
+          setnombA("");
+          setapell1A("");
+          setapell2A("");
+          document.getElementById("errorCed").innerHTML = "";
+        }
+      } else if (selectNidA === 4) {
+        const resp = /^[0-9]{12}$/.test(valor);
+        if (resp && valor.toString().length === 12) {
+          setidClValid("is-valid");
+        } else {
+          setidClValid("is-invalid");
+          setnombA("");
+          setapell1A("");
+          setapell2A("");
+          document.getElementById("errorCed").innerHTML = "";
+        }
       }
-    } else if (selectNidC === 2) {
-      const resp = /^[a-zA-Z0-9]{9}$/.test(val);
-      if (resp && valor.toString().length === 9) {
-        setidClValidC("is-valid");
-      } else {
-        setnombC("");
-        setapell1C("");
-        setapell2C("");
-        document.getElementById("errorCedC").innerHTML = "";
-      }
-    } else if (selectNidC === 3) {
-      const resp = /^[a-zA-Z0-9]{10}$/.test(val);
-      if (resp && valor.toString().length === 10) {
-        setidClValidC("is-valid");
-        console.log(resp, val, ub)
-        cargarDatosC(val, ub);
-      } else {
-        setidClValidC("is-invalid");
-        setnClValidC("is-invalid");
-        setsaClValidC("is-invalid");
-        setnombC("");
-        setapell1C("");
-        setapell2C("");
-        document.getElementById("errorCedC").innerHTML = "";
-      }
-    } else if (selectNidC === 4) {
-      const resp = /^[0-9]{12}$/.test(valor);
-      if (resp && valor.toString().length === 12) {
-        setidClValidC("is-valid");
-      } else {
-        setidClValidC("is-invalid");
-        setnombC("");
-        setapell1C("");
-        setapell2C("");
-        document.getElementById("errorCedC").innerHTML = "";
-      }
+    } else if (ub == 2) {
+      cargarDatosC(val, ub);
     }
-  } else if (ub == 1) {
-    validarInputCedA(val, ub);
-  }
-};
+  };
+
+  //Validacion del campo inputCed del comerciante
+  const validarInputCedC = (val, ub) => {
+    const valor = val;
+    setndiC(valor);
+    console.log(val, ub, selectNidC);
+    if (ub == 2) {
+      if (selectNidC === 1) {
+        const resp = /^[0-9]{9}$/.test(valor);
+        if (resp && valor.toString().length === 9) {
+          setidClValidC("is-valid");
+          cargarDatosP(val, ub);
+        } else {
+          setidClValidC("is-invalid");
+          setnClValidC("");
+          setpaClValidC("");
+          setsaClValidC("");
+          setnombC("");
+          setapell1C("");
+          setapell2C("");
+          document.getElementById("errorCedC").innerHTML = "";
+        }
+      } else if (selectNidC === 2) {
+        const resp = /^[a-zA-Z0-9]{9}$/.test(val);
+        if (resp && valor.toString().length === 9) {
+          setidClValidC("is-valid");
+        } else {
+          setnombC("");
+          setapell1C("");
+          setapell2C("");
+          document.getElementById("errorCedC").innerHTML = "";
+        }
+      } else if (selectNidC === 3) {
+        const resp = /^[a-zA-Z0-9]{10}$/.test(val);
+        if (resp && valor.toString().length === 10) {
+          setidClValidC("is-valid");
+          console.log(resp, val, ub);
+          cargarDatosC(val, ub);
+        } else {
+          setidClValidC("is-invalid");
+          setnClValidC("is-invalid");
+          setsaClValidC("is-invalid");
+          setnombC("");
+          setapell1C("");
+          setapell2C("");
+          document.getElementById("errorCedC").innerHTML = "";
+        }
+      } else if (selectNidC === 4) {
+        const resp = /^[0-9]{12}$/.test(valor);
+        if (resp && valor.toString().length === 12) {
+          setidClValidC("is-valid");
+        } else {
+          setidClValidC("is-invalid");
+          setnombC("");
+          setapell1C("");
+          setapell2C("");
+          document.getElementById("errorCedC").innerHTML = "";
+        }
+      }
+    } else if (ub == 1) {
+      validarInputCedA(val, ub);
+    }
+  };
   //#endregion
 
   //#region Funciones para carga de Datos
@@ -1198,6 +1214,7 @@ const validarInputCedC = (val, ub) => {
       setProv(res.data);
     } catch (error) {
       console.error("Error al obtener los datos de provincia:", error);
+      getProvs();
     }
   };
 
@@ -1207,7 +1224,7 @@ const validarInputCedC = (val, ub) => {
       const val = v?.target.value;
       if (val != null) {
         setdeshabCant(false);
-  
+
         let index = v.target.selectedIndex;
         let ubprov = v.target.options[index].text;
         setProvi(ubprov);
@@ -1220,18 +1237,9 @@ const validarInputCedC = (val, ub) => {
       }
     } catch (error) {
       console.error("Error al obtener los datos del cantón:", error);
-  
-      const shouldRetry = window.confirm(
-        "Ocurrió un error al obtener los datos del cantón. ¿Desea intentar de nuevo?"
-      );
-  
-      if (shouldRetry) {
-        // Llama la función nuevamente para reintentar.
-        getCants(v);
-      }
+      getCants(v);
     }
   };
-  
 
   //Mostrar los distritos por canton
   const getDists = async (v) => {
@@ -1239,7 +1247,7 @@ const validarInputCedC = (val, ub) => {
       const val = v?.target.value;
       if (val != null) {
         v === 0 ? setdeshabDist(true) : setdeshabDist(false);
-  
+
         let index = v.target.selectedIndex;
         let ubcant = v.target.options[index].text;
         setCanto(ubcant);
@@ -1250,25 +1258,16 @@ const validarInputCedC = (val, ub) => {
       }
     } catch (error) {
       console.error("Error al obtener los datos del distrito:", error);
-  
-      const shouldRetryDistrito = window.confirm(
-        "Ocurrió un error al obtener los datos del distrito. ¿Desea intentar de nuevo?"
-      );
-  
-      if (shouldRetryDistrito) {
-        // Llama la función nuevamente para reintentar.
-        getDists(v);
-      }
+      getDists(v);
     }
   };
-  
 
   //Metodo para definir el distrito
   const defubdist = (v) => {
     if (v.target.value != null) {
       const val = v.target.value;
       let index = v.target.selectedIndex;
-      let ubdist = v.target.options[ index ].text;
+      let ubdist = v.target.options[index].text;
       setDistr(ubdist);
       setidDist(val);
       //getMaterias();
@@ -1281,6 +1280,7 @@ const validarInputCedC = (val, ub) => {
       setMateria(res.data);
     } catch (error) {
       console.error("Se ha producido un error al obtener las materias:", error);
+      getMaterias();
     }
   };
 
@@ -1288,15 +1288,15 @@ const validarInputCedC = (val, ub) => {
   const getAsuntConsultado = async (v) => {
     try {
       const val = v?.target.value;
-  
+
       if (val != null) {
         setdeshabAConsultado(false);
-  
+
         let index = v.target.selectedIndex;
         let Materia = v.target.options[index].text;
         setubMat(Materia);
         setidMat(val);
-  
+
         const res = await axios.get(URI + "asu/" + val);
         setAsunto(res.data);
         //getBienes();
@@ -1305,26 +1305,15 @@ const validarInputCedC = (val, ub) => {
         setubDist("0");
       }
     } catch (error) {
-      console.error("Error al obtener los datos del asunto consultado:", error);
-  
-      const shouldRetryAsunto = window.confirm(
-        "Ocurrió un error al obtener los datos del asunto. ¿Desea intentar de nuevo?"
-      );
-  
-      if (shouldRetryAsunto) {
-        // Llama la función nuevamente para reintentar.
-        getAsuntConsultado(v);
-      }
+      getAsuntConsultado(v);
     }
   };
-  
-  
 
   const defAsunto = async (v) => {
     const val = v?.target.value;
     if (val != null) {
       let index = v?.target.selectedIndex;
-      let asun = v?.target.options[ index ].text;
+      let asun = v?.target.options[index].text;
       setubAsu(asun);
       setidAsu(asun);
     }
@@ -1338,14 +1327,14 @@ const validarInputCedC = (val, ub) => {
       setdeshabBien(false);
     } catch (error) {
       console.error("Se ha producido un error al obtener los bienes:", error);
+      getBienes(v);
     }
   };
-  
 
   const defbien = (v) => {
     if (v.label != null) {
       const val = v.label;
-      console.log(val)
+      console.log(val);
       setubBie(val);
       setidBie(v.value);
     }
@@ -1354,21 +1343,16 @@ const validarInputCedC = (val, ub) => {
 
   //Solicitud a DB
   const cargarDatosP = async (val, ub) => {
-    const Ub = ub;
-    console.log(val, Ub);
-
     try {
-        const response = await fetch(URI + 'pers/' + val);
-        if (!response.ok) {
-            throw new Error('Ocurrió un error al obtener los datos de la cédula.');
-        }
-
-        const data = await response.json();
-        const Perso = data[0];
-        setPers(Perso);
-        console.log(Perso);
-
-        if ((ub == 1) && (selectNidA == 1)) {
+      const Ub = ub;
+      console.log(val, Ub);
+      await fetch(URI + "pers/" + val)
+        .then((resp) => resp.json())
+        .then((data) => {
+          const Perso = data[0];
+          setPers(Perso);
+          console.log(Perso);
+          if (ub == 1 && selectNidA == 1) {
             const nombre = Perso?.nombre;
             setnombA(nombre);
             setapell1A(Perso?.first_last_name);
@@ -1376,7 +1360,7 @@ const validarInputCedC = (val, ub) => {
             ValidarinputNomb(nombre, val);
             ValidarinputApp1(Perso?.first_last_name);
             ValidarinputApp2(Perso?.second_last_name.trimEnd());
-        } else if ((ub == 2) && (selectNidC == 1)) {
+          } else if (ub == 2 && selectNidC == 1) {
             const nombre = Perso?.nombre;
             setnombC(nombre);
             setapell1C(Perso?.first_last_name);
@@ -1384,130 +1368,166 @@ const validarInputCedC = (val, ub) => {
             ValidarinputNombC(nombre, val);
             ValidarinputApp1C(Perso?.first_last_name);
             ValidarinputApp2C(Perso?.second_last_name.trimEnd());
-        } else if ((ub == 1) && (selectNidA == 3)) {
+          } else if (ub == 1 && selectNidA == 3) {
             cargarDatosC(val, Ub);
-        }
+          }
+        });
     } catch (error) {
-        console.error(error);
-        const confirmRetryFisica = window.confirm(
-            'Ocurrió un error al obtener los datos de la cédula. ¿Desea intentar de nuevo?'
-        );
-
-        if (confirmRetryFisica) {
-            cargarDatosP(val, ub); // Intentar de nuevo llamando a la función
-        }
+      // Manejo de la excepción
+      console.error("Error en cargarDatosP:", error);
+      // Llama a la función nuevamente
+      cargarDatosP(val, ub);
     }
-}
+  };
 
-
-const cargarDatosC = async (val, ub) => {
-    console.log('En cargardatosC')
+  const cargarDatosC = async (val, ub) => {
     try {
-      const response = await fetch(URI + 'comer/' + val);
-      if (!response.ok) {
-          throw new Error('Ocurrió un error al obtener los datos de la cédula.');
-      }
-
-      const data = await response.json();
-      const Comer = data[0];
-      setComer(Comer);
-      console.log(ub);
-            if ((ub == 1) && (selectNidA == 3)) {
-              console.log('Primer if de comer')
-                if ((Comer?.fantasy_name === null || Comer?.fantasy_name === 'NULL' || Comer?.fantasy_name === 'NA' || Comer?.fantasy_name === 'N/A') && Comer?.business_name !== null) {
-                    setShowCompanyNameA(true);
-                    const nombreA = Comer?.business_name
-                    setnombA(nombreA)
-                    ValidarinputNomb(nombreA, val)
-                    setlblinputName('Nombre de Empresa o institucion')
-                    setinvisibleAp1("d-block col-md-4")
-                    setlblinputName('Nombre de Empresa o institucion')
-                    setlblapell1A('Nombre de Fantasía (Opcional)')
-                    setapell1A("NO INDICA");
-                    setapell2A("NO INDICA");
-                    console.log('si no hay nombre de fantasia')
-                } else if ((Comer?.fantasy_name == 'NULL') || (Comer?.fantasy_name == null) || (Comer?.fantasy_name == 'NA') || (Comer?.fantasy_name == 'N/A') && (Comer?.business_name == null)) {
-                    setShowCompanyNameA(false);
-                    const nombreB = ('NO INDICA')
-                    setinvisibleAp1("d-block col-md-4")
-                    setlblinputName('Nombre de Empresa o institucion')
-                    setlblapell1A('Nombre de Fantasía (Opcional)')
-                    setnombA(nombreB)
-                    setapell1A("NO INDICA");
-                    setapell2A("NO INDICA");
-                    ValidarinputNomb(nombreB, val)
-                    console.log('No hay nombre fantasia ni institucion')
-                } else if ((Comer?.fantasy_name != 'NULL') || (Comer?.fantasy_name != null) || (Comer?.fantasy_name != 'NA') || (Comer?.fantasy_name != 'N/A')) {
-                    setShowCompanyNameA(true);
-                    const nombreM = Comer?.business_name
-                    const nombreN = Comer?.fantasy_name
-                    setinvisibleAp1("d-block col-md-4")
-                    setlblinputName('Nombre de Empresa o institucion')
-                    setlblapell1A('Nombre de Fantasía (Opcional)')
-                    setnombA(nombreM)
-                    setapell1A(nombreN)
-                    setapell2A("NO INDICA");
-                    ValidarinputNomb(nombreM, val)
-                    console.log('Existen ambos')
-                }
-            } else if ((ub == 2) && (selectNidC == 3)) {
-                console.log('segundo if de comer')
-                if (
-                  (Comer?.fantasy_name === null || Comer?.fantasy_name === 'NULL' || Comer?.fantasy_name === 'NA' || Comer?.fantasy_name === 'N/A') &&
-                  Comer?.business_name !== null)
-                  {
-                    setShowCompanyNameC(true);
-                    const nombreC = Comer?.business_name
-                    setnombC(nombreC)
-                    ValidarinputNombC(nombreC, val)
-                    setlblinputNameC('Nombre de Empresa o institucion')
-                    setinvisibleAp1C("d-block col-md-4")
-                    setlblinputNameC('Nombre de Empresa o institucion')
-                    setlblapell1C('Nombre de Fantasía (Opcional)')
-                    setapell1C("NO INDICA");
-                    setapell2C("NO INDICA");
-                    setRsocial(nombreC);
-                    console.log('si no hay nombre de fantasia')
-                } else if ((Comer?.fantasy_name == 'NULL' || Comer?.fantasy_name == null || Comer?.fantasy_name == 'NA' || Comer?.fantasy_name == 'N/A') && Comer?.business_name == null ){
-                  setShowCompanyNameC(false);
-                  const nombreE = ('NO INDICA')
-                    setinvisibleAp1C("d-block col-md-5")
-                    setlblinputNameC('Nombre de Empresa o institucion')
-                    setlblapell1C('Nombre de Fantasía (Opcional)')
-                    setnombC(nombreE)
-                    setRsocial(nombreE);
-                    setapell1C("NO INDICA");
-                    setapell2C("NO INDICA");
-                    ValidarinputNombC(nombreE, val)
-                    console.log('No hay nombre fantasia ni institucion')
-                } else if ((Comer?.fantasy_name != 'NULL') || (Comer?.fantasy_name != null) || (Comer?.fantasy_name != 'NA') || (Comer?.fantasy_name != 'N/A')) {
-                    setShowCompanyNameC(true);
-                    const nombreH = Comer?.business_name
-                    const nombreJ = Comer?.fantasy_name
-                    setinvisibleAp1C("d-block col-md-4")
-                    setlblinputNameC('Nombre de Empresa o institucion')
-                    setlblapell1C('Nombre de Fantasía (Opcional)')
-                    setnombC(nombreH)
-                    setapell1C(nombreJ)
-                    setRsocial(nombreH);
-                    setapell2C("NO INDICA");
-                    ValidarinputNombC(nombreH, val)
-                    console.log('Existen ambos')
-                }
-            } else if ((ub == 2) && (selectNidC == 1)) {
-                cargarDatosP(val, ub)
+      console.log("En cargardatosC");
+      await fetch(URI + "comer/" + val)
+        .then((resp) => resp.json())
+        .then((data) => {
+          const Comer = data[0];
+          setComer(Comer);
+          console.log(ub);
+          if (ub == 1 && selectNidA == 3) {
+            console.log("Primer if de comer");
+            if (
+              (Comer?.fantasy_name === null ||
+                Comer?.fantasy_name === "NULL" ||
+                Comer?.fantasy_name === "NA" ||
+                Comer?.fantasy_name === "N/A") &&
+              Comer?.business_name !== null
+            ) {
+              setShowCompanyNameA(true);
+              const nombreA = Comer?.business_name;
+              setnombA(nombreA);
+              ValidarinputNomb(nombreA, val);
+              setlblinputName("Nombre de Empresa o institucion");
+              setinvisibleAp1("d-block col-md-4");
+              setlblinputName("Nombre de Empresa o institucion");
+              setlblapell1A("Nombre de Fantasía (Opcional)");
+              setapell1A("NO INDICA");
+              setapell2A("NO INDICA");
+              console.log("si no hay nombre de fantasia");
+            } else if (
+              Comer?.fantasy_name == "NULL" ||
+              Comer?.fantasy_name == null ||
+              Comer?.fantasy_name == "NA" ||
+              (Comer?.fantasy_name == "N/A" && Comer?.business_name == null)
+            ) {
+              setShowCompanyNameA(false);
+              const nombreB = "NO INDICA";
+              setinvisibleAp1("d-block col-md-4");
+              setlblinputName("Nombre de Empresa o institucion");
+              setlblapell1A("Nombre de Fantasía (Opcional)");
+              setnombA(nombreB);
+              setapell1A("NO INDICA");
+              setapell2A("NO INDICA");
+              ValidarinputNomb(nombreB, val);
+              console.log("No hay nombre fantasia ni institucion");
+            } else if (
+              Comer?.fantasy_name != "NULL" ||
+              Comer?.fantasy_name != null ||
+              Comer?.fantasy_name != "NA" ||
+              Comer?.fantasy_name != "N/A"
+            ) {
+              setShowCompanyNameA(true);
+              const nombreM = Comer?.business_name;
+              const nombreN = Comer?.fantasy_name;
+              setinvisibleAp1("d-block col-md-4");
+              setlblinputName("Nombre de Empresa o institucion");
+              setlblapell1A("Nombre de Fantasía (Opcional)");
+              setnombA(nombreM);
+              setapell1A(nombreN);
+              setapell2A("NO INDICA");
+              ValidarinputNomb(nombreM, val);
+              console.log("Existen ambos");
             }
-          } catch (error) {
-            console.error(error);
-            const confirmRetryJuridica = window.confirm(
-                'Ocurrió un error al obtener los datos de la cédula. ¿Desea intentar de nuevo?'
-            );
-    
-            if (confirmRetryJuridica) {
-                cargarDatosC(val, ub); // Intentar de nuevo llamando a la función
+          } else if (ub == 2 && selectNidC == 3) {
+            console.log("segundo if de comer");
+            if (
+              (Comer?.fantasy_name === null ||
+                Comer?.fantasy_name === "NULL" ||
+                Comer?.fantasy_name === "NA" ||
+                Comer?.fantasy_name === "N/A") &&
+              Comer?.business_name !== null
+            ) {
+              setShowCompanyNameC(true);
+              const nombreC = Comer?.business_name;
+              setnombC(nombreC);
+              ValidarinputNombC(nombreC, val);
+              setlblinputNameC("Nombre de Empresa o institucion");
+              setinvisibleAp1C("d-block col-md-4");
+              setlblinputNameC("Nombre de Empresa o institucion");
+              setlblapell1C("Nombre de Fantasía (Opcional)");
+              setapell1C("NO INDICA");
+              setapell2C("NO INDICA");
+              setRsocial(nombreC);
+              console.log("si no hay nombre de fantasia");
+            } else if (
+              (Comer?.fantasy_name == "NULL" ||
+                Comer?.fantasy_name == null ||
+                Comer?.fantasy_name == "NA" ||
+                Comer?.fantasy_name == "N/A") &&
+              Comer?.business_name == null
+            ) {
+              setShowCompanyNameC(false);
+              const nombreE = "NO INDICA";
+              setinvisibleAp1C("d-block col-md-5");
+              setlblinputNameC("Nombre de Empresa o institucion");
+              setlblapell1C("Nombre de Fantasía (Opcional)");
+              setnombC(nombreE);
+              setRsocial(nombreE);
+              setapell1C("NO INDICA");
+              setapell2C("NO INDICA");
+              ValidarinputNombC(nombreE, val);
+              console.log("No hay nombre fantasia ni institucion");
+            } else if (
+              Comer?.fantasy_name != "NULL" ||
+              Comer?.fantasy_name != null ||
+              Comer?.fantasy_name != "NA" ||
+              Comer?.fantasy_name != "N/A"
+            ) {
+              setShowCompanyNameC(true);
+              const nombreH = Comer?.business_name;
+              const nombreJ = Comer?.fantasy_name;
+              setinvisibleAp1C("d-block col-md-4");
+              setlblinputNameC("Nombre de Empresa o institucion");
+              setlblapell1C("Nombre de Fantasía (Opcional)");
+              setnombC(nombreH);
+              setapell1C(nombreJ);
+              setRsocial(nombreH);
+              setapell2C("NO INDICA");
+              ValidarinputNombC(nombreH, val);
+              console.log("Existen ambos");
             }
-        }
+          } else if (ub == 2 && selectNidC == 1) {
+            cargarDatosP(val, ub);
+          }
+        });
+    } catch (error) {
+      // Manejo de la excepción
+      console.error("Error en cargarDatosC:", error);
+      // Llama a la función nuevamente
+      cargarDatosC(val, ub);
     }
+  };
+
+  function desactivarCampos() {
+    // Obtén todos los elementos de entrada, textarea y select
+    var elementos = document.querySelectorAll("input, textarea, select");
+
+    // Recorre todos los elementos y desactívalos
+    elementos.forEach(function (elemento) {
+      elemento.disabled = true;
+    });
+  }
+
+  window.addEventListener("load", function () {
+    // Desplazar la página hacia arriba
+    window.scrollTo(0, 0);
+});
+
   //#endregion
 
   return (
@@ -1517,11 +1537,19 @@ const cargarDatosC = async (val, ub) => {
         className="g-3 me-3 needs-validation"
         noValidate
         action="#"
-        required>
+        required
+      >
         <div className="container">
           <div className="row">
             <div className="col-md-6">
-            <div class="d-none"><button type="submit" disabled class="none" aria-hidden="true"></button></div>
+              <div class="d-none">
+                <button
+                  type="submit"
+                  disabled
+                  class="none"
+                  aria-hidden="true"
+                ></button>
+              </div>
               <h3 className="clrTitle">Datos del registro </h3>
             </div>
             <div className="col-md-6">
@@ -1540,10 +1568,11 @@ const cargarDatosC = async (val, ub) => {
                 name="eRegistro"
                 onChange={(e) => {
                   let index = e.target.selectedIndex;
-                  let estReg = e.target.options[ index ].text;
+                  let estReg = e.target.options[index].text;
                   seteRegistro(estReg);
                 }}
-                required>
+                required
+              >
                 <option defaultValue="DEFAULT" value="0">
                   Activo
                 </option>
@@ -1561,7 +1590,8 @@ const cargarDatosC = async (val, ub) => {
                 className="form-select"
                 name="eRegistro"
                 onChange={(e) => OrigenChange(e)}
-                required>
+                required
+              >
                 <option defaultValue="DEFAULT" value="0">
                   presencial
                 </option>
@@ -1628,7 +1658,8 @@ const cargarDatosC = async (val, ub) => {
                 className="form-select"
                 name="userEspe"
                 onChange={(e) => UsSpeChange(e)}
-                required>
+                required
+              >
                 <option defaultValue="DEFAULT" value="0">
                   No Aplica
                 </option>
@@ -1670,7 +1701,8 @@ const cargarDatosC = async (val, ub) => {
               onChange={(e) =>
                 input_TIDchange(e.target.selectedIndex, e.target.value)
               }
-              required>
+              required
+            >
               <option defaultValue="DEFAULT" value="0" disabled>
                 Seleccione...
               </option>
@@ -1703,24 +1735,28 @@ const cargarDatosC = async (val, ub) => {
           </div>
         </div>
         <div className="row row my-3 ms-1">
-        {showCompanyNameA && (
-          <div id="divinputName" className={classdivnomb}>
-            <label htmlFor="inputName" className="form-label" id="lblinputName">
-              {lblinputName}
-            </label>
-            <input
-              name="nombre"
-              type="text"
-              className={`form-control ${nclValid}`}
-              readOnly={onlyRnombA}
-              id="inputName"
-              value={nombA}
-              onChange={(e) => ValidarinputNomb(e.target.value, "1")}
-              disabled={dehabil}
-              required
-            />
-            <div className="invalid-feedback">{fbNameA}</div>
-          </div>
+          {showCompanyNameA && (
+            <div id="divinputName" className={classdivnomb}>
+              <label
+                htmlFor="inputName"
+                className="form-label"
+                id="lblinputName"
+              >
+                {lblinputName}
+              </label>
+              <input
+                name="nombre"
+                type="text"
+                className={`form-control ${nclValid}`}
+                readOnly={onlyRnombA}
+                id="inputName"
+                value={nombA}
+                onChange={(e) => ValidarinputNomb(e.target.value, "1")}
+                disabled={dehabil}
+                required
+              />
+              <div className="invalid-feedback">{fbNameA}</div>
+            </div>
           )}
           <div id="divinput1erAp" className={invisibleAp1}>
             <label htmlFor="input1erAp" className="form-label">
@@ -1763,7 +1799,7 @@ const cargarDatosC = async (val, ub) => {
           <div className="col-md-3">
             <label htmlFor="inputEmail" className="form-label me-3">
               Correo electronico
-            </label> 
+            </label>
             <input
               className="form-check-input me-2"
               type="checkbox"
@@ -1789,7 +1825,6 @@ const cargarDatosC = async (val, ub) => {
               Por favor, ingrese un correo electronico válido.
             </div>
             <span id="erroremail2" className="fs-6"></span>
-           
           </div>
           <div className="col-md-3">
             <label htmlFor="inputEmail2" className="form-label me-3">
@@ -1885,12 +1920,14 @@ const cargarDatosC = async (val, ub) => {
               disabled={deshabProv}
               onChange={(e) => getCants(e)}
               defaultValue={ubProv}
-              required>
+              required
+            >
               <option
                 defaultValue="DEFAULT"
                 value="0"
                 selected="selected"
-                disabled>
+                disabled
+              >
                 Seleccione...
               </option>
               {prov?.map((prov) => (
@@ -1915,12 +1952,14 @@ const cargarDatosC = async (val, ub) => {
               disabled={deshabCant}
               onChange={(e) => getDists(e)}
               defaultValue={ubCant}
-              required>
+              required
+            >
               <option
                 defaultValue="DEFAULT"
                 value="0"
                 selected="selected"
-                disabled>
+                disabled
+              >
                 Seleccione...
               </option>
               {idprov > 0 &&
@@ -1946,12 +1985,14 @@ const cargarDatosC = async (val, ub) => {
               disabled={deshabDist}
               onChange={(e) => defubdist(e)}
               defaultValue={ubDist}
-              required>
+              required
+            >
               <option
                 defaultValue="DEFAULT"
                 value="0"
                 selected="selected"
-                disabled>
+                disabled
+              >
                 Seleccione...
               </option>
               {idcant > 0 &&
@@ -1982,12 +2023,14 @@ const cargarDatosC = async (val, ub) => {
               disabled={deshabMateria}
               onChange={(e) => getAsuntConsultado(e)}
               defaultValue={idMat}
-              required>
+              required
+            >
               <option
                 defaultValue="DEFAULT"
                 value="0"
                 selected="selected"
-                disabled>
+                disabled
+              >
                 Seleccione...
               </option>
               {materia?.map((materia) => (
@@ -2012,12 +2055,14 @@ const cargarDatosC = async (val, ub) => {
               disabled={deshabAConsultado}
               onChange={(e) => defAsunto(e)}
               defaultValue={idAsu}
-              required>
+              required
+            >
               <option
                 defaultValue="DEFAULT"
                 value="0"
                 selected="selected"
-                disabled>
+                disabled
+              >
                 Seleccione...
               </option>
               {idprov > 0 &&
@@ -2066,7 +2111,8 @@ const cargarDatosC = async (val, ub) => {
               onChange={(e) =>
                 input_TIDCchange(e.target.selectedIndex, e.target.value)
               }
-              required>
+              required
+            >
               <option defaultValue="DEFAULT" value="0" disabled>
                 Seleccione...
               </option>
@@ -2101,26 +2147,27 @@ const cargarDatosC = async (val, ub) => {
           </div>
         </div>
         <div className="row my-3 ms-1">
-        {showCompanyNameC && (
-          <div id="divinputNameC" className={classdivnombC}>
-            <label
-              htmlFor="inputNameC"
-              className="form-label"
-              id="lblinputNameC">
-              {lblinputNameC}
-            </label>
-            <input
-              name="nombrec"
-              type="text"
-              className={`form-control ${nclValidC}`}
-              id="inputNameC"
-              value={nombC}
-              onChange={(e) => ValidarinputNombC(e.target.value, "2")}
-              required
-            />
-            <div className="invalid-feedback">{fbNameC}</div>
-            <div className="fs-6 fw-bold lh-1 text-danger"></div>
-          </div>
+          {showCompanyNameC && (
+            <div id="divinputNameC" className={classdivnombC}>
+              <label
+                htmlFor="inputNameC"
+                className="form-label"
+                id="lblinputNameC"
+              >
+                {lblinputNameC}
+              </label>
+              <input
+                name="nombrec"
+                type="text"
+                className={`form-control ${nclValidC}`}
+                id="inputNameC"
+                value={nombC}
+                onChange={(e) => ValidarinputNombC(e.target.value, "2")}
+                required
+              />
+              <div className="invalid-feedback">{fbNameC}</div>
+              <div className="fs-6 fw-bold lh-1 text-danger"></div>
+            </div>
           )}
           <div id="divinput1erApC" className={invisibleAp1C}>
             <label htmlFor="input1erApC" className="form-label">
@@ -2171,7 +2218,8 @@ const cargarDatosC = async (val, ub) => {
               rows="10"
               onChange={(e) => ValidarinputHecho(e.target.value)}
               disabled={dehabil}
-              required></textarea>
+              required
+            ></textarea>
             <div className="invalid-feedback">
               Por favor, describa lo sucedido.
             </div>
@@ -2188,7 +2236,8 @@ const cargarDatosC = async (val, ub) => {
               rows="10"
               onChange={(e) => ValidarinputResp(e.target.value)}
               disabled={dehabil}
-              required></textarea>
+              required
+            ></textarea>
             <div className="invalid-feedback">
               Por favor, describa la respuesta a la consulta.
             </div>
@@ -2211,7 +2260,8 @@ const cargarDatosC = async (val, ub) => {
               type="submit"
               className="p-3 m-3 btn btn-primary fw-bolder"
               onClick={(e) => validarbtnSubmit(e)}
-              disabled={dehabilSubmit}>
+              disabled={dehabilSubmit}
+            >
               Guardar Registro
             </button>
           </div>
@@ -2221,16 +2271,19 @@ const cargarDatosC = async (val, ub) => {
               id="btnenviar"
               type="buttom"
               className="p-3 m-3 btn btn-danger fw-bolder float-start"
-              onClick={() => CerrarSession()}>
+              onClick={() => CerrarSession()}
+            >
               Salir
             </Link>
           </div>
           <div className="col-md-auto">
             <button
               id="btnNewForm"
-              type="buttom"
+              type="button"
               onClick={() => window.location.reload()}
-              className="p-3 m-3 btn btn-danger fw-bolder float-start">
+              
+              className="p-3 m-3 btn btn-danger fw-bolder float-start"
+            >
               Formulario Nuevo
             </button>
           </div>
