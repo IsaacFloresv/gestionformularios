@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import Cookies from "universal-cookie";
 
-
 import "./App.css";
 import BarChart from "./components/BarChart.js";
 import LineChart from "./components/LineChart.js";
@@ -168,7 +167,7 @@ function Stadistic() {
       Accept: "*/*",
       "Content-Type": "application/json",
     };
-  
+
     if (fchFin === "X" || fchIni === "X") {
       bodyContent = JSON.stringify({
         elemt: `${elme}`,
@@ -182,24 +181,24 @@ function Stadistic() {
         fchaIni: `${fchIni}`,
       });
     }
-  
+
     let reqOptions = {
       url: "https://fwmback-production.up.railway.app/topelemt",
       method: "PUT",
       headers: headersList,
       data: bodyContent,
     };
-  
+
     try {
       const res = await axios.request(reqOptions);
       const report = res.data[0];
-  
+
       // Filter and count occurrences of the selected "Categoría" within the "Materia" column
       const selectedCategory = materiaOption;
       const totalCount = report
         .filter((item) => item.materia === selectedCategory)
         .reduce((total, item) => total + item.total, 0);
-  
+
       // Create a new array with only the selected "Categoría" and its count
       const categoryReport = [
         {
@@ -207,7 +206,7 @@ function Stadistic() {
           total: totalCount,
         },
       ];
-  
+
       setDReportes(categoryReport);
     } catch (error) {
       console.error(error);
@@ -314,7 +313,7 @@ function Stadistic() {
       elme = elment;
     }
     if (valor === 14) {
-      elment = "r_social";
+      elment = "razon_social";
       setDato1(elment);
       elme = elment;
     }
@@ -328,12 +327,12 @@ function Stadistic() {
       setDato1(elment);
       elme = elment;
     }
-    if (valor === 17) {
+    /*if (valor === 17) {
       elment = "fchacomplet";
       setDato1(elment);
       elme = elment;
-    }
-    if (valor === 18) {
+    }*/
+    if (valor === 17) {
       elment = "usuario_s";
       setDato1(elment);
       elme = elment;
@@ -792,7 +791,7 @@ function Stadistic() {
       }
     }
   };
-
+  /*
   const generarTabla = () => {
     const tabla = [
       ["Elemento", "Total"],
@@ -804,7 +803,7 @@ function Stadistic() {
 
     setTabla(tabla);
   };
-
+*/
   const generarGrafico = () => {
     const grafico = new Chart("grafico", {
       type: graFic,
@@ -867,37 +866,35 @@ function Stadistic() {
     XLSX.writeFile(wb, 'datos_combinados.xlsx');
   };
 */
-const exportToExcel = () => {
-  // Obtener los datos de la tabla
-  const table = document.getElementById('RepoSoliPres');
-  const ws = XLSX.utils.table_to_sheet(table);
+  const exportToExcel = () => {
+    // Obtener los datos de la tabla
+    const table = document.getElementById("RepoSoliPres");
+    const ws = XLSX.utils.table_to_sheet(table);
 
-  // Crear un libro de Excel
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Hoja1');
+    // Crear un libro de Excel
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Hoja1");
 
-  // Generar un archivo Excel
-  const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    // Generar un archivo Excel
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
 
-  // Crear un blob a partir de los datos del archivo Excel
-  const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    // Crear un blob a partir de los datos del archivo Excel
+    const blob = new Blob([excelBuffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
 
-  // Crear una URL de objeto para el blob
-  const url = URL.createObjectURL(blob);
+    // Crear una URL de objeto para el blob
+    const url = URL.createObjectURL(blob);
 
-  // Crear un enlace para descargar el archivo
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'tabla.xlsx';
-  a.click();
+    // Crear un enlace para descargar el archivo
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "tabla.xlsx";
+    a.click();
 
-  // Liberar la URL de objeto
-  URL.revokeObjectURL(url);
-};
-
-
-
-  
+    // Liberar la URL de objeto
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <>
@@ -1020,7 +1017,8 @@ const exportToExcel = () => {
             id="input_TID"
             className="form-select"
             name="tid"
-            onChange={(e) => selectElem(e)}>
+            onChange={(e) => selectElem(e)}
+          >
             <option value="0" selected="selected" disabled>
               Seleccione...
             </option>
@@ -1040,8 +1038,8 @@ const exportToExcel = () => {
             <option defaultValue="14">Razon Social/Nombre Comerciante</option>
             <option defaultValue="15">Nombre Fantasía</option>
             <option defaultValue="16">Fecha de Creación</option>
-            <option defaultValue="17">Fecha de Completado</option>
-            <option defaultValue="18">Usuario Especial</option>
+            {/* <option defaultValue="17">Fecha de Completado</option> */}
+            <option defaultValue="17">Usuario Especial</option>
           </select>
         </div>
         <div className="col-md-4">
@@ -1118,9 +1116,9 @@ const exportToExcel = () => {
           <div className="row mt-2">
             <p>Opciones para Exportar</p>
             <div className="col-md-4 mt-2 text-wrap">
-            <button className="btn btn-success me-1" onClick={exportToExcel}>
-  Exportar a Excel
-</button>
+              <button className="btn btn-success me-1" onClick={exportToExcel}>
+                Exportar a Excel
+              </button>
             </div>
             <div className="d-none col-md-4 mt-2 text-wrap">
               <button className="btn btn-success me-1">Exportar a PDF</button>
@@ -1169,26 +1167,30 @@ const exportToExcel = () => {
         <br />
         <br />
 
-        <div>
+        <div className="row">
           <table
             id="RepoSoliPres"
-            className="table table-light fs-5 table-striped caption-top badge text-nowrap border-primary overflow-auto"
+            className="table table-container table-bordered table-striped table-hover caption-top custom-table"
           >
-            <caption>{title}</caption>
+            <caption className="custom-caption">{title}</caption>
             <thead>
               <tr>
-                <th scope="col">{dato1}</th>
+                <th scope="col">
+                {dato1 === "materia"
+    ? "Materias"
+    : (dato1 === "asunto" ? "Asuntos Consultados" : (dato1 === "bien" ? "Bienes" : (dato1 === "provi" ? "Provincia" : (dato1 === "canto" ? "Canton" : (dato1 === "distr" ? "Distrito" : (dato1 === "tdia" ? "Tipo de identificación Usuario" : (dato1 === "tdic" ? "Tipo de identificación Comerciante" : (dato1 === "ndia" ? "Número de identificación Usuario" : (dato1 === "ndic" ? "Número de identificación Comerciante" : (dato1 === "id_agente" ? "Agente" : (dato1 === "origen_r" ? "Origen" : (dato1 === "status" ? "Estado" : (dato1 === "razon_social" ? "Razon Social" : (dato1 === "nombre_fantasia" ? "Nombre Fantasía" : (dato1 === "fchareg" ? "Fecha de Creación" : (dato1 === "usuario_s" ? "Usuario Especial" : dato1))))))))))))))))}
+                </th>
                 <th scope="col">Total</th>
               </tr>
             </thead>
             <tbody>
-              {top?.map((dato) => (
-                <tr key={dato.elemt}>
-                  <th scope="row">{dato.elemt}</th>
-                  <td>{dato.total}</td>
-                </tr>
-              ))}
-            </tbody>
+  {top?.map((dato) => (
+    <tr key={dato.elemt}>
+      <th scope="row">{dato.elemt}</th>
+      <td style={{ textAlign: 'center', fontSize: '20px', fontWeight: 'bold' }}>{dato.total}</td>
+    </tr>
+  ))}
+</tbody>
           </table>
         </div>
         <br />
@@ -1202,79 +1204,13 @@ const exportToExcel = () => {
                   className="d-none btn btn-danger"
                   onClick={() => ResetTable()}
                 >
-                  Restrablecer Tabla
+                  Restablecer Tabla
                 </button>
                 <table
                   id="RepoTotal"
                   className="table table-dark table-striped badge text-nowrap table-bordered border-primary overflow-auto"
                 >
                   <caption>{title}</caption>
-                  <thead>
-                    <tr>
-                      <th scope="col"># Reporte</th>
-                      <th scope="col">Agente</th>
-                      <th scope="col">Creado</th>
-                      <th scope="col">Estado</th>
-                      <th scope="col">Origen</th>
-                      <th scope="col">Usuario Esp.</th>
-                      <th scope="col">Observasión</th>
-                      <th scope="col">Tipo Ident.</th>
-                      <th scope="col">N. Ident.</th>
-                      <th scope="col">Nombre Cliente</th>
-                      <th scope="col">1er Apell Cliente</th>
-                      <th scope="col">2do Apell Cliente</th>
-                      <th scope="col">Correo 1</th>
-                      <th scope="col">Correo 2</th>
-                      <th scope="col">Telefono 1</th>
-                      <th scope="col">Telefono 2</th>
-                      <th scope="col">Provincia</th>
-                      <th scope="col">Canton</th>
-                      <th scope="col">Distrito</th>
-                      <th scope="col">Materia</th>
-                      <th scope="col">Asunto Consult.</th>
-                      <th scope="col">Bien</th>
-                      <th scope="col">Tipo Ident. Comerciante</th>
-                      <th scope="col">N. Ident. Comerciante</th>
-                      <th scope="col">Razon Social/Nombre Comerciante</th>
-                      <th scope="col">Nombre Fantasía</th>
-                      <th scope="col">Descripción del caso</th>
-                      <th scope="col">Respuesta Enviada</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {reportes.map((reportes) => (
-                      <tr key={reportes.id}>
-                        <th scope="row">{reportes.id_report}</th>
-                        <td>{reportes.id_agente}</td>
-                        <td>{reportes.fchareg}</td>
-                        <td>{reportes.status}</td>
-                        <td>{reportes.origen_r}</td>
-                        <td>{reportes.usuario_s}</td>
-                        <td>{reportes.us_obser}</td>
-                        <td>{reportes.tdia}</td>
-                        <td>{reportes.ndia}</td>
-                        <td>{reportes.nomba}</td>
-                        <td>{reportes.apell1a}</td>
-                        <td>{reportes.apell2a}</td>
-                        <td>{reportes.email}</td>
-                        <td>{reportes.email2}</td>
-                        <td>{reportes.tel}</td>
-                        <td>{reportes.tel2}</td>
-                        <td>{reportes.provi}</td>
-                        <td>{reportes.canto}</td>
-                        <td>{reportes.distr}</td>
-                        <td>{reportes.materia}</td>
-                        <td>{reportes.asunto}</td>
-                        <td>{reportes.bien}</td>
-                        <td>{reportes.tdic}</td>
-                        <td>{reportes.ndic}</td>
-                        <td>{reportes.razon_social}</td>
-                        <td>{reportes.nombre_fantasia}</td>
-                        <td>{reportes.desch}</td>
-                        <td>{reportes.respe}</td>
-                      </tr>
-                    ))}
-                  </tbody>
                 </table>
               </div>
             </div>
