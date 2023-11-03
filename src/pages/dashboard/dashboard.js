@@ -7,6 +7,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import { startOfDay, endOfDay } from "date-fns";
 import * as XLSX from "xlsx";
 import "./dashboard.css";
+import Select from "react-select";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { useRef } from 'react';
 
 const cookies = new Cookies();
 const meicimg = "logo_meic.jpg";
@@ -24,13 +28,21 @@ function Dashboard() {
   };
   // Estados para almacenar los valores de los filtros
   const [filtroNReport, setFiltroNReport] = useState("");
-  const [filtroAgent, setFiltroAgent] = useState("");
+  //const [filtroAgent, setFiltroAgent] = useState("");
+  const [agentOptions, setAgentOptions] = useState([]);
+  const [selectedAgents, setSelectedAgents] = useState([]);
   const [filtroFchCreado, setFiltroFchCreado] = useState("");
-  const [filtroStatus, setFiltroStatus] = useState("");
-  const [filtroOrigen, setFiltroOrigen] = useState("");
+  //const [filtroStatus, setFiltroStatus] = useState("");
+  const [statusOptions, setStatusOptions] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  //const [filtroOrigen, setFiltroOrigen] = useState("");
+  const [origenOptions, setOrigenOptions] = useState([]);
+  const [selectedOrigen, setSelectedOrigen] = useState([]);
   const [filtroUsuario_s, setFiltroUsuario_s] = useState("");
   const [filtroUs_obser, setFiltroUs_obser] = useState("");
-  const [filtroTdia, setFiltroTdia] = useState("");
+  //const [filtroTdia, setFiltroTdia] = useState("");
+  const [tdiaOptions, setTdiaOptions] = useState([]);
+  const [selectedTdia, setSelectedTdia] = useState([]);
   const [filtroNdia, setFiltroNdia] = useState("");
   const [filtroNomba, setFiltroNomba] = useState("");
   const [filtroApell1a, setFiltroApell1a] = useState("");
@@ -39,28 +51,39 @@ function Dashboard() {
   const [filtroEmail2, setFiltroEmail2] = useState("");
   const [filtroTel, setFiltroTel] = useState("");
   const [filtroTel2, setFiltroTel2] = useState("");
-  const [filtroProvi, setFiltroProvi] = useState("");
-  const [filtroCanto, setFiltroCanto] = useState("");
-  const [filtroDistr, setFiltroDistr] = useState("");
-  const [filtroMateria, setFiltroMateria] = useState("");
-  const [filtroAsunto, setFiltroAsunto] = useState("");
-  const [filtroBien, setFiltroBien] = useState("");
-  const [filtroTdic, setFiltroTdic] = useState("");
+  //const [filtroProvi, setFiltroProvi] = useState("");
+  const [proviOptions, setProviOptions] = useState([]);
+  const [selectedProvi, setSelectedProvi] = useState([]);
+  //const [filtroCanto, setFiltroCanto] = useState("");
+  const [cantoOptions, setCantoOptions] = useState([]);
+  const [selectedCanto, setSelectedCanto] = useState([]);
+  //const [filtroDistr, setFiltroDistr] = useState("");
+  const [distrOptions, setDistrOptions] = useState([]);
+  const [selectedDistr, setSelectedDistr] = useState([]);
+  //const [filtroMateria, setFiltroMateria] = useState("");
+  const [materiaOptions, setMateriaOptions] = useState([]);
+  const [selectedMateria, setSelectedMateria] = useState([]);
+  //const [filtroAsunto, setFiltroAsunto] = useState("");
+  const [asuntoOptions, setAsuntoOptions] = useState([]);
+  const [selectedAsunto, setSelectedAsunto] = useState([]);
+  //const [filtroBien, setFiltroBien] = useState("");
+  const [bienOptions, setBienOptions] = useState([]);
+  const [selectedBien, setSelectedBien] = useState([]);
+  //const [filtroTdic, setFiltroTdic] = useState("");
+  const [tdicOptions, setTdicOptions] = useState([]);
+  const [selectedTdic, setSelectedTdic] = useState([]);
   const [filtroNdic, setFiltroNdic] = useState("");
   const [filtroRsocial, setFiltroRsocial] = useState("");
   const [filtroFantasia, setFiltroFantasia] = useState("");
   const [filtroDesch, setFiltroDesch] = useState("");
   const [filtroRespe, setFiltroRespe] = useState("");
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  //Estados del paginado
   const [startDateFilter, setStartDateFilter] = useState(null);
   const [endDateFilter, setEndDateFilter] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [numPaginas, setNumPaginas] = useState(0);
-  const [isMounted, setIsMounted] = useState(false);
-
-  const [dreportes, setDReportes] = useState([]);
-  const [freportes, setFReportes] = useState([]);
-  const [reportes, setReportes] = useState([]);
-  const [allreportes, setAllReportes] = useState([]);
   const itemsPerPage = 50;
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -69,6 +92,33 @@ function Dashboard() {
   const endPage = Math.min(numPaginas, startPage + maxPagesToShow - 1);
   const [rowsCount, setRowsCount] = useState(0);
 
+  //Estados para borrar filtros
+  const filtroNReportRef = useRef();
+  const filtroFchCreadoRef = useRef();
+  const filtroUsuario_sRef = useRef();
+  const filtroUs_obserRef = useRef();
+  const filtroNdiaRef = useRef();
+  const filtroNombaRef = useRef();
+  const filtroApell1aRef = useRef();
+  const filtroApell2aRef = useRef();
+  const filtroEmailRef = useRef();
+  const filtroEmail2Ref = useRef();
+  const filtroTelRef = useRef();
+  const filtroTel2Ref = useRef();
+  const filtroNdicRef = useRef();
+  const filtroRsocialRef = useRef();
+  const filtroFantasiaRef = useRef();
+  const filtroDeschRef = useRef();
+  const filtroRespeRef = useRef();
+
+  //Estados carga inicial de reportes
+  const [isMounted, setIsMounted] = useState(false);
+  const [dreportes, setDReportes] = useState([]);
+  const [freportes, setFReportes] = useState([]);
+  const [reportes, setReportes] = useState([]);
+  const [allreportes, setAllReportes] = useState([]);
+
+  //Funcion principal
   const getReportes = async () => {
     const res = await axios.get(URI);
     const report = res.data;
@@ -79,70 +129,274 @@ function Dashboard() {
     setFReportes(report);
     setAllReportes(report);
     setRowsCount(report.length);
+    obtencionFiltroAgente(report);
+    obtencionFiltroStatus(report);
+    obtencionFiltroOrigen(report);
+    obtencionFiltroTdia(report);
+    obtencionFiltroProvi(report);
+    obtencionFiltroCanto(report);
+    obtencionFiltroDistr(report);
+    obtencionFiltroMateria(report);
+    obtencionFiltroAsunto(report);
+    obtencionFiltroBien(report);
+    obtencionFiltroTdic(report);
+  };
+
+  //Funciones actualizadores de select
+  const obtencionFiltroAgente = (report) => {
+    // Obtén la lista de agentes únicos desde tus datos
+    const agentOptions = [
+      ...new Set(report.map((reporte) => reporte.id_agente)),
+    ].map((agente) => ({
+      value: agente,
+      label: agente,
+    }));
+    // Ordena la lista de agentes en orden alfabético
+    agentOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setAgentOptions(agentOptions);
+  };
+
+  const obtencionFiltroStatus = (report) => {
+    // Obtén la lista de status únicos desde tus datos
+    const statusOptions = [
+      ...new Set(report.map((reporte) => reporte.status)),
+    ].map((status) => ({
+      value: status,
+      label: status,
+    }));
+    // Ordena la lista de status en orden alfabético
+    statusOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setStatusOptions(statusOptions);
+  };
+
+  const obtencionFiltroOrigen = (report) => {
+    // Obtén la lista de status únicos desde tus datos
+    const origenOptions = [
+      ...new Set(report.map((reporte) => reporte.origen_r)),
+    ].map((origen) => ({
+      value: origen,
+      label: origen,
+    }));
+    // Ordena la lista de status en orden alfabético
+    origenOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setOrigenOptions(origenOptions);
+  };
+
+  const obtencionFiltroTdia = (report) => {
+    // Obtén la lista de status únicos desde tus datos
+    const tdiaOptions = [
+      ...new Set(report.map((reporte) => reporte.tdia)),
+    ].map((tdia) => ({
+      value: tdia,
+      label: tdia,
+    }));
+    // Ordena la lista de status en orden alfabético
+    tdiaOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setTdiaOptions(tdiaOptions);
+  };
+
+  const obtencionFiltroProvi = (report) => {
+    // Obtén la lista de status únicos desde tus datos
+    const proviOptions = [
+      ...new Set(report.map((reporte) => reporte.provi)),
+    ].map((provi) => ({
+      value: provi,
+      label: provi,
+    }));
+    // Ordena la lista de status en orden alfabético
+    proviOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setProviOptions(proviOptions);
+  };
+
+  const obtencionFiltroCanto = (report) => {
+    // Obtén la lista de status únicos desde tus datos
+    const cantoOptions = [
+      ...new Set(report.map((reporte) => reporte.canto)),
+    ].map((canto) => ({
+      value: canto,
+      label: canto,
+    }));
+    // Ordena la lista de status en orden alfabético
+    cantoOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setCantoOptions(cantoOptions);
+  };
+
+  const obtencionFiltroDistr = (report) => {
+    // Obtén la lista de status únicos desde tus datos
+    const distrOptions = [
+      ...new Set(report.map((reporte) => reporte.distr)),
+    ].map((distr) => ({
+      value: distr,
+      label: distr,
+    }));
+    // Ordena la lista de status en orden alfabético
+    distrOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setDistrOptions(distrOptions);
+  };
+
+  const obtencionFiltroMateria = (report) => {
+    // Obtén la lista de status únicos desde tus datos
+    const materiaOptions = [
+      ...new Set(report.map((reporte) => reporte.materia)),
+    ].map((materia) => ({
+      value: materia,
+      label: materia,
+    }));
+    // Ordena la lista de status en orden alfabético
+    materiaOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setMateriaOptions(materiaOptions);
+  };
+
+  const obtencionFiltroAsunto = (report) => {
+    // Obtén la lista de status únicos desde tus datos
+    const asuntoOptions = [
+      ...new Set(report.map((reporte) => reporte.asunto)),
+    ].map((asunto) => ({
+      value: asunto,
+      label: asunto,
+    }));
+    // Ordena la lista de status en orden alfabético
+    asuntoOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setAsuntoOptions(asuntoOptions);
+  };
+
+  const obtencionFiltroBien = (report) => {
+    // Obtén la lista de status únicos desde tus datos
+    const bienOptions = [
+      ...new Set(report.map((reporte) => reporte.bien)),
+    ].map((bien) => ({
+      value: bien,
+      label: bien,
+    }));
+    // Ordena la lista de status en orden alfabético
+    bienOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setBienOptions(bienOptions);
+  };
+
+  const obtencionFiltroTdic = (report) => {
+    // Obtén la lista de status únicos desde tus datos
+    const tdicOptions = [
+      ...new Set(report.map((reporte) => reporte.tdic)),
+    ].map((tdic) => ({
+      value: tdic,
+      label: tdic,
+    }));
+    // Ordena la lista de status en orden alfabético
+    tdicOptions.sort((a, b) => a.label.localeCompare(b.label));
+
+    setTdicOptions(tdicOptions);
   };
 
   // Función de búsqueda que combina los filtros
   const buscarReportes = () => {
     // Obtener los datos de la base de datos
-    const filt = dreportes.filter(
-      (reporte) =>
-        {
-      const [fechaPart, horaPart] = reporte.fchareg.split(', ');
-  
+    const filt = dreportes.filter((reporte) => {
+      const [fechaPart, horaPart] = reporte.fchareg.split(", ");
+
       // Separar la cadena de fecha en día, mes y año
-      const [fecha, hora] = fechaPart.split(' ');
-      const [dia, mes, ano] = fecha.split('/');
-  
+      const [fecha, hora] = fechaPart.split(" ");
+      const [dia, mes, ano] = fecha.split("/");
+
       if (horaPart) {
         // Dividir la hora en horas, minutos y segundos
-        const [horas, minutos, segundos] = horaPart.split(':');
-  
-        // Crear un objeto Date con los valores extraídos
-        const reportDate = new Date(ano, mes - 1, dia, horas, minutos, segundos);
+        const [horas, minutos, segundos] = horaPart.split(":");
 
-        const agentes = filtroAgent.split(',').map((agente) => agente.trim().toLowerCase());
-  
+        // Crear un objeto Date con los valores extraídos
+        const reportDate = new Date(
+          ano,
+          mes - 1,
+          dia,
+          horas,
+          minutos,
+          segundos
+        );
+
+        const nreporte = filtroNReport.split(',').map((nreport) => nreport.trim().toString());
+        const numdias = filtroNdia.split(',').map((numdia) => numdia.trim().toLowerCase());
+        const nombres = filtroNomba.split(',').map((nombre) => nombre.trim().toLowerCase());
+        const apellidos1 = filtroApell1a.split(',').map((apellido1) => apellido1.trim().toLowerCase());
+        const apellidos2 = filtroApell2a.split(',').map((apellido2) => apellido2.trim().toLowerCase());
+        const correos1 = filtroEmail.split(',').map((correo1) => correo1.trim().toLowerCase());
+        const correos2 = filtroEmail2.split(',').map((correo2) => correo2.trim().toLowerCase());
+        const teles1 = filtroTel.split(',').map((tele1) => tele1.trim().toLowerCase());
+        const teles2 = filtroTel2.split(',').map((tele2) => tele2.trim().toLowerCase());
+        const numdics = filtroNdic.split(',').map((numdic) => numdic.trim().toLowerCase());
+        const razsociales = filtroRsocial.split(',').map((razsocial) => razsocial.trim().toLowerCase());
+        const nomfantasia = filtroFantasia.split(',').map((fantasia) => fantasia.trim().toLowerCase());
+        const descrips = filtroDesch.split(',').map((descrip) => descrip.trim().toLowerCase());
+        const resps = filtroRespe.split(',').map((resp) => resp.trim().toLowerCase());
+
+        const selectedAgentValues = selectedAgents.map((agent) => agent.value);
+        const agentMatches = selectedAgentValues.includes(reporte.id_agente);
+        const selectedStatusValues = selectedStatus.map((status) => status.value);
+        const statusMatches = selectedStatusValues.includes(reporte.status);
+        const selectedOrigenValues = selectedOrigen.map((origen) => origen.value);
+        const origenMatches = selectedOrigenValues.includes(reporte.origen_r);
+        const selectedTdiaValues = selectedTdia.map((tdia) => tdia.value);
+        const tdiaMatches = selectedTdiaValues.includes(reporte.tdia);
+        const selectedProviValues = selectedProvi.map((provi) => provi.value);
+        const proviMatches = selectedProviValues.includes(reporte.provi);
+        const selectedCantoValues = selectedCanto.map((canto) => canto.value);
+        const cantoMatches = selectedCantoValues.includes(reporte.canto);
+        const selectedDistrValues = selectedDistr.map((distr) => distr.value);
+        const distrMatches = selectedDistrValues.includes(reporte.distr);
+        const selectedMateriaValues = selectedMateria.map((materia) => materia.value);
+        const materiaMatches = selectedMateriaValues.includes(reporte.materia);
+        const selectedAsuntoValues = selectedAsunto.map((asunto) => asunto.value);
+        const asuntoMatches = selectedAsuntoValues.includes(reporte.asunto);
+        const selectedBienValues = selectedBien.map((bien) => bien.value);
+        const bienMatches = selectedBienValues.includes(reporte.bien);
+        const selectedTdicValues = selectedTdic.map((tdic) => tdic.value);
+        const tdicMatches = selectedTdicValues.includes(reporte.tdic);
+
         return (
-        reporte.id_report.toString().includes(filtroNReport) &&
-        agentes.some((agente) => reporte.id_agente?.toLowerCase().includes(agente)) &&
-        reporte.fchareg.includes(filtroFchCreado) &&
-        reporte.status?.toLowerCase().includes(filtroStatus.toLowerCase()) &&
-        reporte.origen_r?.toLowerCase().includes(filtroOrigen.toLowerCase()) &&
-        reporte.usuario_s
-          ?.toLowerCase()
-          .includes(filtroUsuario_s.toLowerCase()) &&
-        reporte.us_obser
-          ?.toLowerCase()
-          .includes(filtroUs_obser.toLowerCase()) &&
-        reporte.tdia?.toLowerCase().includes(filtroTdia.toLowerCase()) &&
-        reporte.ndia?.toLowerCase().includes(filtroNdia.toLowerCase()) &&
-        reporte.nomba?.toLowerCase().includes(filtroNomba.toLowerCase()) &&
-        reporte.apell1a?.toLowerCase().includes(filtroApell1a.toLowerCase()) &&
-        reporte.apell2a?.toLowerCase().includes(filtroApell2a.toLowerCase()) &&
-        reporte.email?.toLowerCase().includes(filtroEmail.toLowerCase()) &&
-        reporte.email2?.toLowerCase().includes(filtroEmail2.toLowerCase()) &&
-        reporte.tel?.toLowerCase().includes(filtroTel.toLowerCase()) &&
-        reporte.tel2?.toLowerCase().includes(filtroTel2.toLowerCase()) &&
-        reporte.provi?.toLowerCase().includes(filtroProvi.toLowerCase()) &&
-        reporte.canto?.toLowerCase().includes(filtroCanto.toLowerCase()) &&
-        reporte.distr?.toLowerCase().includes(filtroDistr.toLowerCase()) &&
-        reporte.materia?.toLowerCase().includes(filtroMateria.toLowerCase()) &&
-        reporte.asunto?.toLowerCase().includes(filtroAsunto.toLowerCase()) &&
-        reporte.bien?.toLowerCase().includes(filtroBien.toLowerCase()) &&
-        reporte.tdic?.toLowerCase().includes(filtroTdic.toLowerCase()) &&
-        reporte.ndic?.toLowerCase().includes(filtroNdic.toLowerCase()) &&
-        reporte.razon_social
-          ?.toLowerCase()
-          .includes(filtroRsocial.toLowerCase()) &&
-        reporte.nombre_fantasia
-          ?.toLowerCase()
-          .includes(filtroFantasia.toLowerCase()) &&
-        reporte.desch?.toLowerCase().includes(filtroDesch.toLowerCase()) &&
-        reporte.respe?.toLowerCase().includes(filtroRespe.toLowerCase()) &&
-          (!startDateFilter || reportDate >= startOfDay(new Date(startDateFilter))) &&
+          nreporte.some((nreport) => reporte.id_report?.toString().includes(nreport)) &&
+          (selectedAgentValues.length === 0 || agentMatches) &&
+          reporte.fchareg.includes(filtroFchCreado) &&
+          (selectedStatusValues.length === 0 || statusMatches) &&
+          (selectedOrigenValues.length === 0 || origenMatches) &&
+          reporte.usuario_s
+            ?.toLowerCase()
+            .includes(filtroUsuario_s.toLowerCase()) &&
+          reporte.us_obser
+            ?.toLowerCase()
+            .includes(filtroUs_obser.toLowerCase()) &&
+          (selectedTdiaValues.length === 0 || tdiaMatches) &&
+          numdias.some((numdia) => reporte.ndia?.toLowerCase().includes(numdia)) &&
+          nombres.some((nombre) => reporte.nomba?.toLowerCase().includes(nombre)) &&
+          apellidos1.some((apellido1) => reporte.apell1a?.toLowerCase().includes(apellido1)) &&
+          apellidos2.some((apellido2) => reporte.apell2a?.toLowerCase().includes(apellido2)) &&
+          correos1.some((correo1) => reporte.email?.toLowerCase().includes(correo1)) &&
+          correos2.some((correo2) => reporte.email2?.toLowerCase().includes(correo2)) &&
+          teles1.some((tele1) => reporte.tel?.toLowerCase().includes(tele1)) &&
+          teles2.some((tele2) => reporte.tel2?.toLowerCase().includes(tele2)) &&
+          (selectedProviValues.length === 0 || proviMatches) &&
+          (selectedCantoValues.length === 0 || cantoMatches) &&
+          (selectedDistrValues.length === 0 || distrMatches) &&
+          (selectedMateriaValues.length === 0 || materiaMatches) &&
+          (selectedAsuntoValues.length === 0 || asuntoMatches) &&
+          (selectedBienValues.length === 0 || bienMatches) &&
+          (selectedTdicValues.length === 0 || tdicMatches) &&
+          numdics.some((numdic) => reporte.ndic?.toLowerCase().includes(numdic)) &&
+          razsociales.some((razsocial) => reporte.razon_social?.toLowerCase().includes(razsocial)) &&
+          nomfantasia.some((fantasia) => reporte.nombre_fantasia?.toLowerCase().includes(fantasia)) &&
+          descrips.some((descrip) => reporte.desch?.toLowerCase().includes(descrip)) &&
+          resps.some((resp) => reporte.respe?.toLowerCase().includes(resp)) &&
+          (!startDateFilter ||
+            reportDate >= startOfDay(new Date(startDateFilter))) &&
           (!endDateFilter || reportDate <= endOfDay(new Date(endDateFilter)))
-    );
-     }
+        );
+      }
     });
 
     // Pasar los filtros a la función
@@ -164,8 +418,8 @@ function Dashboard() {
     setCurrentPage(1);
   };
 
-  const handleFiltroAgent = (e) => {
-    setFiltroAgent(e.target.value);
+  const handleSelectAgent = (selectedOptions) => {
+    setSelectedAgents(selectedOptions);
     setCurrentPage(1);
   };
 
@@ -174,13 +428,13 @@ function Dashboard() {
     setCurrentPage(1);
   };
 
-  const handleFiltroStatus = (e) => {
-    setFiltroStatus(e.target.value);
+  const handleSelectStatus = (selectedOptions) => {
+    setSelectedStatus(selectedOptions);
     setCurrentPage(1);
   };
 
-  const handleFiltroOrigen = (e) => {
-    setFiltroOrigen(e.target.value);
+  const handleSelectOrigen = (selectedOptions) => {
+    setSelectedOrigen(selectedOptions);
     setCurrentPage(1);
   };
 
@@ -194,8 +448,8 @@ function Dashboard() {
     setCurrentPage(1);
   };
 
-  const handleFiltroTdia = (e) => {
-    setFiltroTdia(e.target.value);
+  const handleSelectTdia = (selectedOptions) => {
+    setSelectedTdia(selectedOptions);
     setCurrentPage(1);
   };
 
@@ -239,38 +493,38 @@ function Dashboard() {
     setCurrentPage(1);
   };
 
-  const handleFiltroProvi = (e) => {
-    setFiltroProvi(e.target.value);
+  const handleSelectProvi = (selectedOptions) => {
+    setSelectedProvi(selectedOptions);
     setCurrentPage(1);
   };
 
-  const handleFiltroCanto = (e) => {
-    setFiltroCanto(e.target.value);
+  const handleSelectCanto = (selectedOptions) => {
+    setSelectedCanto(selectedOptions);
     setCurrentPage(1);
   };
 
-  const handleFiltroDistr = (e) => {
-    setFiltroDistr(e.target.value);
+  const handleSelectDistr = (selectedOptions) => {
+    setSelectedDistr(selectedOptions);
     setCurrentPage(1);
   };
 
-  const handleFiltroMateria = (e) => {
-    setFiltroMateria(e.target.value);
+  const handleSelectMateria = (selectedOptions) => {
+    setSelectedMateria(selectedOptions);
     setCurrentPage(1);
   };
 
-  const handleFiltroAsunto = (e) => {
-    setFiltroAsunto(e.target.value);
+  const handleSelectAsunto = (selectedOptions) => {
+    setSelectedAsunto(selectedOptions);
     setCurrentPage(1);
   };
 
-  const handleFiltroBien = (e) => {
-    setFiltroBien(e.target.value);
+  const handleSelectBien = (selectedOptions) => {
+    setSelectedBien(selectedOptions);
     setCurrentPage(1);
   };
 
-  const handleFiltroTdic = (e) => {
-    setFiltroTdic(e.target.value);
+  const handleSelectTdic = (selectedOptions) => {
+    setSelectedTdic(selectedOptions);
     setCurrentPage(1);
   };
 
@@ -299,7 +553,7 @@ function Dashboard() {
     setCurrentPage(1);
   };
 
- const handleStartDateChange = (date) => {
+  const handleStartDateChange = (date) => {
     setStartDateFilter(date);
     setCurrentPage(1);
   };
@@ -309,9 +563,30 @@ function Dashboard() {
     setCurrentPage(1);
   };
 
-  const handleFiltrarClick = () => {
-    buscarReportes();
-    setCurrentPage(1);
+  const aplicarFiltrosPredeterminados = (selectedOption) => {
+    if (selectedOption.value === "opcion1") {
+      // Filtro por agente: Esteban Hidalgo Madrigal
+      const agenteEsteban = { label: "Esteban Hidalgo Madrigal", value: "Esteban Hidalgo Madrigal" };
+      handleSelectAgent([agenteEsteban]);
+
+      // Filtro por origen: formulario web
+      const origenFormularioWeb = { label: "formulario web", value: "formulario web" };
+      handleSelectOrigen([origenFormularioWeb]);
+
+      // Filtro por provincia: CARTAGO
+      const provinciaCartago = { label: "CARTAGO", value: "CARTAGO" };
+      handleSelectProvi([provinciaCartago]); 
+    }
+  };
+
+  const opcionesSelect = [
+    { label: "Opción 1", value: "opcion1" },
+    { label: "Opción 2", value: "opcion2" },
+    // Agrega más opciones si es necesario
+  ];
+
+  const handleChange = (selectedOption) => {
+    aplicarFiltrosPredeterminados(selectedOption);
   };
 
   const handleBorrarFiltrosClick = () => {
@@ -324,6 +599,7 @@ function Dashboard() {
     console.log("adios");
   };
 
+  //Funcion de exportar a excel
   const exportarTodosLosDatos = () => {
     // Copia profunda de los datos originales para evitar modificaciones no deseadas
     const datosExportar = JSON.parse(JSON.stringify(allreportes));
@@ -358,6 +634,7 @@ function Dashboard() {
       reporte["Nombre Fantasía"] = reporte.nombre_fantasia;
       reporte["Descripción del caso"] = reporte.desch;
       reporte["Respuesta Enviada"] = reporte.respe;
+      reporte["ID Audio"] = reporte.id_audio;
 
       // Eliminacion de las columnas originales
       delete reporte.id_report;
@@ -404,17 +681,96 @@ function Dashboard() {
     XLSX.writeFile(wb, "Reporte_General.xlsx"); //Nombre del documento
   };
 
+  const exportarTodosLosDatosAPDF = () => {
+    const datosExportar = JSON.parse(JSON.stringify(allreportes));
+  
+    const columns = [
+      '# Reporte',
+      'Agente',
+      'Fch. Creado',
+      'Estado',
+      'Origen',
+      'Usuario Especial',
+      'Observación',
+      'Tipo Ident.',
+      'N. Ident.',
+      'Nombre Cliente',
+      '1er Apell Cliente',
+      '2do Apell Cliente',
+      'Correo 1',
+      'Correo 2',
+      'Telefono 1',
+      'Telefono 2',
+      'Provincia',
+      'Canton',
+      'Distrito',
+      'Materia',
+      'Asunto Consult.',
+      'Bien',
+      'Tipo Ident. Comerciante',
+      'N. Ident. Comerciante',
+      'Razon Social/Nombre Comerciante',
+      'Nombre Fantasía',
+      'Descripción del caso',
+      'Respuesta Enviada',
+    ];
+  
+    const rows = datosExportar.map(reporte => [
+      reporte.id_report,
+      reporte.id_agente,
+      reporte.fchareg,
+      reporte.status,
+      reporte.origen_r,
+      reporte.usuario_s,
+      reporte.us_obser,
+      reporte.tdia,
+      reporte.ndia,
+      reporte.nomba,
+      reporte.apell1a,
+      reporte.apell2a,
+      reporte.email,
+      reporte.email2,
+      reporte.tel,
+      reporte.tel2,
+      reporte.provi,
+      reporte.canto,
+      reporte.distr,
+      reporte.materia,
+      reporte.asunto,
+      reporte.bien,
+      reporte.tdic,
+      reporte.ndic,
+      reporte.razon_social,
+      reporte.nombre_fantasia,
+      reporte.desch,
+      reporte.respe,
+    ]);
+  
+  // Crear un documento con orientación horizontal
+  const doc = new jsPDF({
+    orientation: 'landscape', // Configurar la orientación a horizontal
+    format: 'a0',
+  });
+  
+    doc.autoTable({
+      head: [columns],
+      body: rows,
+    });
+  
+    doc.save('Reporte_General.pdf');
+};
+
   const todosFiltrosEstanVacios = () => {
     setAllReportes(freportes);
     return (
       filtroNReport === "" &&
-      filtroAgent === "" &&
+      selectedAgents === "" &&
       filtroFchCreado === "" &&
-      filtroStatus === "" &&
-      filtroOrigen === "" &&
+      selectedStatus === "" &&
+      selectedOrigen === "" &&
       filtroUsuario_s === "" &&
       filtroUs_obser === "" &&
-      filtroTdia === "" &&
+      selectedTdia === "" &&
       filtroNdia === "" &&
       filtroNomba === "" &&
       filtroApell1a === "" &&
@@ -423,13 +779,13 @@ function Dashboard() {
       filtroEmail2 === "" &&
       filtroTel === "" &&
       filtroTel2 === "" &&
-      filtroProvi === "" &&
-      filtroCanto === "" &&
-      filtroDistr === "" &&
-      filtroMateria === "" &&
-      filtroAsunto === "" &&
-      filtroBien === "" &&
-      filtroTdic === "" &&
+      selectedProvi === "" &&
+      selectedCanto === "" &&
+      selectedDistr === "" &&
+      selectedMateria === "" &&
+      selectedAsunto === "" &&
+      selectedBien === "" &&
+      selectedTdic === "" &&
       filtroNdic === "" &&
       filtroRsocial === "" &&
       filtroFantasia === "" &&
@@ -447,6 +803,8 @@ function Dashboard() {
     setReportes(dreportes.slice(startIndex, endIndex));
   };
 
+  //UseEffect carga inicial
+
   useEffect(() => {
     setIsMounted(true); // Marcar el componente como montado cuando se monte
     return () => setIsMounted(false); // Marcar el componente como desmontado cuando se desmonte
@@ -454,7 +812,7 @@ function Dashboard() {
 
   useEffect(() => {
     if (isMounted) {
-    getReportes();
+      getReportes();
     }
   }, [isMounted]);
 
@@ -468,13 +826,13 @@ function Dashboard() {
     startIndex,
     endIndex,
     filtroNReport,
-    filtroAgent,
+    selectedAgents,
     filtroFchCreado,
-    filtroStatus,
-    filtroOrigen,
+    selectedStatus,
+    selectedOrigen,
     filtroUsuario_s,
     filtroUs_obser,
-    filtroTdia,
+    selectedTdia,
     filtroNdia,
     filtroNomba,
     filtroApell1a,
@@ -483,13 +841,13 @@ function Dashboard() {
     filtroEmail2,
     filtroTel,
     filtroTel2,
-    filtroProvi,
-    filtroCanto,
-    filtroDistr,
-    filtroMateria,
-    filtroAsunto,
-    filtroBien,
-    filtroTdic,
+    selectedProvi,
+    selectedCanto,
+    selectedDistr,
+    selectedMateria,
+    selectedAsunto,
+    selectedBien,
+    selectedTdic,
     filtroNdic,
     filtroRsocial,
     filtroFantasia,
@@ -499,16 +857,69 @@ function Dashboard() {
     endDateFilter,
   ]);
 
+  //Funcion para borrar el filtro de fecha
   const resetDates = () => {
     setStartDateFilter(null);
     setEndDateFilter(null);
     setCurrentPage(1);
   };
 
+  //Funcion para borrar todos los filtros
+  const resetAll = () => {
+    setStartDateFilter(null);
+    setEndDateFilter(null);
+    setFiltroNReport("");
+    setSelectedAgents([]);
+    setFiltroFchCreado("");
+    setSelectedStatus([]);
+    setSelectedOrigen([]);
+    setFiltroUsuario_s("");
+    setFiltroUs_obser("");
+    setSelectedTdia([]);
+    setFiltroNdia("");
+    setFiltroNomba("");
+    setFiltroApell1a("");
+    setFiltroApell2a("");
+    setFiltroEmail("");
+    setFiltroEmail2("");
+    setFiltroTel("");
+    setFiltroTel2("");
+    setSelectedProvi([]);
+    setSelectedCanto([]);
+    setSelectedDistr([]);
+    setSelectedMateria([]);
+    setSelectedAsunto([]);
+    setSelectedBien([]);
+    setSelectedTdic([]);
+    setFiltroNdic("");
+    setFiltroRsocial("");
+    setFiltroFantasia("");
+    setFiltroDesch("");
+    setFiltroRespe("");
+    filtroNReportRef.current.value = '';
+    filtroFchCreadoRef.current.value = '';
+    filtroUs_obserRef.current.value = '';
+    filtroUsuario_sRef.current.value = '';
+    filtroNdiaRef.current.value = '';
+    filtroNombaRef.current.value = '';
+    filtroApell1aRef.current.value = '';
+    filtroApell2aRef.current.value = '';
+    filtroEmailRef.current.value = '';
+    filtroEmail2Ref.current.value = '';
+    filtroTelRef.current.value = '';
+    filtroTel2Ref.current.value = '';
+    filtroNdicRef.current.value = '';
+    filtroRsocialRef.current.value = '';
+    filtroFantasiaRef.current.value = '';
+    filtroDeschRef.current.value = '';
+    filtroRespeRef.current.value = '';
+    setCurrentPage(1);
+  };
+
   return (
     <>
-      <nav className="navbar bg-body-white fixed-top position-relative shadow">
-        <div className="container">
+      <nav className="navbar bg-white fixed-top position-fixed top-0 shadow" style={{ background: "rgba(255, 255, 255, 0.8)" }}>
+  <div className="container" style={{ maxWidth: "1200px" }}>
           <img
             src={meicimg}
             alt="MEIC"
@@ -597,15 +1008,20 @@ function Dashboard() {
               </ul>
             </div>
           </div>
-        </div>
-      </nav>
-      <div className="container-fluid position-absolute start-0 w-auto p-3">
-        <div className="d-flex flex-row mb-1 ms-2">
+          </div>
+          <div className="d-flex flex-row mb-1 ms-2">
           <button
             className="btn btn-success"
             onClick={() => exportarTodosLosDatos()}
           >
-            Exportar datos a Excel
+            Exportar a Excel
+          </button>
+          <button
+            className="pdf btnpdf"
+            onClick={() => exportarTodosLosDatosAPDF()}
+            style={{ marginLeft: 10 }}
+          >
+            Exportar a PDF
           </button>
           <div className="d-flex flex-row mb-0 ms-2 datepicker">
             <DatePicker.default
@@ -627,11 +1043,15 @@ function Dashboard() {
               dateFormat="dd/MM/yyyy, HH:mm:ss"
             />
           </div>
+          <button className="btn btn-success" onClick={() => resetDates()}>
+            Eliminar fechas
+          </button>
           <button
-            className="btn btn-success"
-            onClick={() => resetDates()}
+            className="deletebtn btndelete"
+            onClick={() => resetAll()}
+            style={{ marginLeft: 10 }}
           >
-            Eliminar filtro fecha
+            Eliminar filtros
           </button>
           <nav aria-label="...">
             <ul className="d-flex flex-row mb-1 ms-2 pagination">
@@ -650,29 +1070,28 @@ function Dashboard() {
               </li>
             </ul>
           </nav>
-          {/*<button className="btn btn-success" onClick={resetDates}>Reiniciar</button>*/}
-          <button className="d-none btn btn-success me-1">
-            Exportar datos a PDF
-          </button>
-          <button className="d-none btn btn-success">
-            Exportar datos a CSV{" "}
-          </button>
+          <Select
+                  onChange={handleChange}
+                  options={opcionesSelect}
+                  placeholder="Vistas"
+                  className="custom-select"
+                />
+          <div className="d-flex flex-row mb-1 ms-2 pagination-info">Datos mostrados: {rowsCount}</div>
         </div>
-        <div className="pagination-info">
-           Datos mostrados: {rowsCount}
-        </div>
+      </nav>
+      <div className="container-fluid position-absolute start-0 w-auto p-3">
         <table class="table table-container table-bordered table-striped table-hover">
           {/*<caption>Reportes solicitud de asesoria presencial</caption>*/}
           <thead>
             <tr>
               <th scope="col"># Reporte</th>
-              <th scope="col">Agente</th>
+              <th scope="col" class="agente-column">Agente</th>
               <th scope="col">Creado</th>
-              <th scope="col">Estado</th>
-              <th scope="col">Origen</th>
+              <th scope="col" class="status-column">Estado</th>
+              <th scope="col" class="origen-column">Origen</th>
               <th scope="col">Usuario Esp.</th>
               <th scope="col">Observación</th>
-              <th scope="col">Tipo Ident.</th>
+              <th scope="col" class="tid-column">Tipo Ident.</th>
               <th scope="col">N. Ident.</th>
               <th scope="col">Nombre Cliente</th>
               <th scope="col">1er Apell Cliente</th>
@@ -681,13 +1100,13 @@ function Dashboard() {
               <th scope="col">Correo 2</th>
               <th scope="col">Telefono 1</th>
               <th scope="col">Telefono 2</th>
-              <th scope="col">Provincia</th>
-              <th scope="col">Canton</th>
-              <th scope="col">Distrito</th>
-              <th scope="col">Materia</th>
-              <th scope="col">Asunto Consult.</th>
-              <th scope="col">Bien</th>
-              <th scope="col">Tipo Ident. Comerciante</th>
+              <th scope="col" class="provi-column">Provincia</th>
+              <th scope="col" class="canto-column">Canton</th>
+              <th scope="col" class="distr-column">Distrito</th>
+              <th scope="col" class="materia-column">Materia</th>
+              <th scope="col" class="asunto-column">Asunto Consult.</th>
+              <th scope="col" class="bien-column">Bien</th>
+              <th scope="col" class="tid-column">Tipo Ident. Comerciante</th>
               <th scope="col">N. Ident. Comerciante</th>
               <th scope="col">Razon Social/Nombre Comerciante</th>
               <th scope="col">Nombre Fantasía</th>
@@ -698,120 +1117,186 @@ function Dashboard() {
           <tbody>
             <tr>
               <td>
-                <input id="buscarNReport" onChange={handleFiltroNReport} />
+                <input id="buscarNReport" ref={filtroNReportRef} onChange={handleFiltroNReport} />
               </td>
               <td>
-                <input id="buscarAgent" onChange={handleFiltroAgent} />
+                <Select
+                  isMulti
+                  options={agentOptions}
+                  value={selectedAgents}
+                  placeholder="Seleccione"
+                  onChange={handleSelectAgent}
+                />
               </td>
               <td>
-                <input id="buscarFchCreado" onChange={handleFiltroFchCreado} />
+                <input id="buscarFchCreado" ref={filtroFchCreadoRef} onChange={handleFiltroFchCreado} />
               </td>
               <td>
-                <input id="buscarStatus" onChange={handleFiltroStatus} />
+                <Select
+                  isMulti
+                  options={statusOptions}
+                  value={selectedStatus}
+                  placeholder="Seleccione"
+                  onChange={handleSelectStatus}
+                />
               </td>
               <td>
-                <input id="buscarOrigen" onChange={handleFiltroOrigen} />
+                <Select
+                  isMulti
+                  options={origenOptions}
+                  value={selectedOrigen}
+                  placeholder="Seleccione"
+                  onChange={handleSelectOrigen}
+                />
               </td>
               <td>
-                <input id="buscarUsuario_s" onChange={handleFiltroUsuario_s} />
+                <input id="buscarUsuario_s" ref={filtroUsuario_sRef} onChange={handleFiltroUsuario_s} />
               </td>
               <td>
-                <input id="buscarUs_obser" onChange={handleFiltroUs_obser} />
+                <input id="buscarUs_obser" ref={filtroUs_obserRef} onChange={handleFiltroUs_obser} />
               </td>
               <td>
-                <input id="buscarTdia" onChange={handleFiltroTdia} />
+                <Select
+                  isMulti
+                  options={tdiaOptions}
+                  value={selectedTdia}
+                  placeholder="Seleccione"
+                  onChange={handleSelectTdia}
+                />
               </td>
               <td>
-                <input id="buscarNdia" onChange={handleFiltroNdia} />
+                <input id="buscarNdia" ref={filtroNdiaRef} onChange={handleFiltroNdia} />
               </td>
               <td>
-                <input id="buscarNomba" onChange={handleFiltroNomba} />
+                <input id="buscarNomba" ref={filtroNombaRef} onChange={handleFiltroNomba} />
               </td>
               <td>
-                <input id="buscarApell1a" onChange={handleFiltroApell1a} />
+                <input id="buscarApell1a" ref={filtroApell1aRef} onChange={handleFiltroApell1a} />
               </td>
               <td>
-                <input id="buscarApell2a" onChange={handleFiltroApell2a} />
+                <input id="buscarApell2a" ref={filtroApell2aRef} onChange={handleFiltroApell2a} />
               </td>
               <td>
-                <input id="buscarEmail" onChange={handleFiltroEmail} />
+                <input id="buscarEmail" ref={filtroEmailRef} onChange={handleFiltroEmail} />
               </td>
               <td>
-                <input id="buscarEmail2" onChange={handleFiltroEmail2} />
+                <input id="buscarEmail2" ref={filtroEmail2Ref} onChange={handleFiltroEmail2} />
               </td>
               <td>
-                <input id="buscarTel" onChange={handleFiltroTel} />
+                <input id="buscarTel" ref={filtroTelRef} onChange={handleFiltroTel} />
               </td>
               <td>
-                <input id="buscarTel2" onChange={handleFiltroTel2} />
+                <input id="buscarTel2" ref={filtroTel2Ref} onChange={handleFiltroTel2} />
               </td>
               <td>
-                <input id="buscarProvi" onChange={handleFiltroProvi} />
+              <Select
+                  isMulti
+                  options={proviOptions}
+                  value={selectedProvi}
+                  placeholder="Seleccione"
+                  onChange={handleSelectProvi}
+                />
               </td>
               <td>
-                <input id="buscarCanto" onChange={handleFiltroCanto} />
+              <Select
+                  isMulti
+                  options={cantoOptions}
+                  value={selectedCanto}
+                  placeholder="Seleccione"
+                  onChange={handleSelectCanto}
+                />
               </td>
               <td>
-                <input id="buscarDistr" onChange={handleFiltroDistr} />
+              <Select
+                  isMulti
+                  options={distrOptions}
+                  value={selectedDistr}
+                  placeholder="Seleccione"
+                  onChange={handleSelectDistr}
+                />
               </td>
               <td>
-                <input id="buscarMateria" onChange={handleFiltroMateria} />
+                <Select
+                  isMulti
+                  options={materiaOptions}
+                  value={selectedMateria}
+                  placeholder="Seleccione"
+                  onChange={handleSelectMateria}
+                />
               </td>
               <td>
-                <input id="buscarAsunto" onChange={handleFiltroAsunto} />
+                <Select
+                  isMulti
+                  options={asuntoOptions}
+                  value={selectedAsunto}
+                  placeholder="Seleccione"
+                  onChange={handleSelectAsunto}
+                />
               </td>
               <td>
-                <input id="buscarBien" onChange={handleFiltroBien} />
+                <Select
+                  isMulti
+                  options={bienOptions}
+                  value={selectedBien}
+                  placeholder="Seleccione"
+                  onChange={handleSelectBien}
+                />
               </td>
               <td>
-                <input id="buscarTdic" onChange={handleFiltroTdic} />
+                <Select
+                  isMulti
+                  options={tdicOptions}
+                  value={selectedTdic}
+                  placeholder="Seleccione"
+                  onChange={handleSelectTdic}
+                />
               </td>
               <td>
-                <input id="buscarNdic" onChange={handleFiltroNdic} />
+                <input id="buscarNdic" ref={filtroNdicRef} onChange={handleFiltroNdic} />
               </td>
               <td>
-                <input id="buscarRsocial" onChange={handleFiltroRsocial} />
+                <input id="buscarRsocial" ref={filtroRsocialRef} onChange={handleFiltroRsocial} />
               </td>
               <td>
-                <input id="buscarFantasia" onChange={handleFiltroFantasia} />
+                <input id="buscarFantasia" ref={filtroFantasiaRef} onChange={handleFiltroFantasia} />
               </td>
               <td>
-                <input id="buscarDesch" onChange={handleFiltroDesch} />
+                <input id="buscarDesch" ref={filtroDeschRef} onChange={handleFiltroDesch} />
               </td>
               <td>
-                <input id="buscarRespe" onChange={handleFiltroRespe} />
+                <input id="buscarRespe" ref={filtroRespeRef} onChange={handleFiltroRespe} />
               </td>
             </tr>
-            {reportes.map((reportes) => (
-              <tr key={reportes.id}>
-                <th scope="row">{reportes.id_report}</th>
-                <td>{reportes.id_agente}</td>
-                <td>{reportes.fchareg}</td>
-                <td>{reportes.status}</td>
-                <td>{reportes.origen_r}</td>
-                <td>{reportes.usuario_s}</td>
-                <td>{reportes.us_obser}</td>
-                <td>{reportes.tdia}</td>
-                <td>{reportes.ndia}</td>
-                <td>{reportes.nomba}</td>
-                <td>{reportes.apell1a}</td>
-                <td>{reportes.apell2a}</td>
-                <td>{reportes.email}</td>
-                <td>{reportes.email2}</td>
-                <td>{reportes.tel}</td>
-                <td>{reportes.tel2}</td>
-                <td>{reportes.provi}</td>
-                <td>{reportes.canto}</td>
-                <td>{reportes.distr}</td>
-                <td>{reportes.materia}</td>
-                <td>{reportes.asunto}</td>
-                <td>{reportes.bien}</td>
-                <td>{reportes.tdic}</td>
-                <td>{reportes.ndic}</td>
-                <td>{reportes.razon_social}</td>
-                <td>{reportes.nombre_fantasia}</td>
-                <td>{reportes.desch}</td>
-                <td>{reportes.respe}</td>
+            {reportes.map((dreportes) => (
+              <tr key={dreportes.id}>
+                <th className="fixed-width-select" scope="row">{dreportes.id_report}</th>
+                <td class="red-text">{dreportes.id_agente}</td>
+                <td>{dreportes.fchareg}</td>
+                <td>{dreportes.status}</td>
+                <td>{dreportes.origen_r}</td>
+                <td>{dreportes.usuario_s}</td>
+                <td>{dreportes.us_obser}</td>
+                <td>{dreportes.tdia}</td>
+                <td>{dreportes.ndia}</td>
+                <td>{dreportes.nomba}</td>
+                <td>{dreportes.apell1a}</td>
+                <td>{dreportes.apell2a}</td>
+                <td>{dreportes.email}</td>
+                <td>{dreportes.email2}</td>
+                <td>{dreportes.tel}</td>
+                <td>{dreportes.tel2}</td>
+                <td>{dreportes.provi}</td>
+                <td>{dreportes.canto}</td>
+                <td>{dreportes.distr}</td>
+                <td>{dreportes.materia}</td>
+                <td>{dreportes.asunto}</td>
+                <td>{dreportes.bien}</td>
+                <td>{dreportes.tdic}</td>
+                <td>{dreportes.ndic}</td>
+                <td>{dreportes.razon_social}</td>
+                <td>{dreportes.nombre_fantasia}</td>
+                <td>{dreportes.desch}</td>
+                <td>{dreportes.respe}</td>
               </tr>
             ))}
           </tbody>
