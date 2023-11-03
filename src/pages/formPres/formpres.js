@@ -242,6 +242,7 @@ const CompFormpres = () => {
   const [fgValidC, setfgValidC] = useState("");
   const [dhClValid, setdhClValid] = useState("");
   const [respClValid, setRespClValid] = useState("");
+  const [AudisValid, setAudIsValid] = useState("");
   //#endregion UseState de Imputs
   //#endregion
 
@@ -736,6 +737,18 @@ const CompFormpres = () => {
       } else if (Ub === 2) {
         setemClValid2("is-invalid");
       }
+    }
+  };
+
+  //Validacion Audio Origen
+  const ValidarinputAudioOrigen = (e) => {
+    const value = e.target.value;
+    setIdaudio(value);
+
+    if (value.length === 16) {
+      setAudIsValid("is-valid");
+    } else {
+      setAudIsValid("is-invalid");
     }
   };
 
@@ -1623,12 +1636,10 @@ const CompFormpres = () => {
               <input
                 name="idAudio"
                 type="text"
-                className={`form-control`}
+                className={`form-control ${AudisValid}`}
                 id="inputidaudio"
                 value={idaudio}
-                onChange={(e) => {
-                  setIdaudio(e.target.value);
-                }}
+                onChange={ValidarinputAudioOrigen}
                 required
               />
             </div>
