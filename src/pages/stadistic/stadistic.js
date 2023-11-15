@@ -9,6 +9,8 @@ import LineChart from "./components/LineChart.js";
 import PieChart from "./components/PieChart.js";
 import { UserData } from "./Data.js";
 import XLSX from "xlsx";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const cookies = new Cookies();
 const meicimg = "logo_meic.jpg";
@@ -813,32 +815,6 @@ function Stadistic() {
     setGrafico(grafico);
   };
 
-  //Funciones para desaparecer opciones en elementos a evaluar
-  const handleSelect1Change = (e) => {
-    const selectedValue = e.target.value;
-    setSelectedOption1(selectedValue);
-  };
-
-  const handleSelect2Change = (e) => {
-    const selectedValue2 = e.target.value;
-    setSelectedOption2(selectedValue2);
-  };
-
-  const handleSelect3Change = (e) => {
-    const selectedValue3 = e.target.value;
-    setSelectedOption3(selectedValue3);
-  };
-
-  const handleMateriaChange = (e) => {
-    const selectedValue = e.target.value;
-    setMateriaOption(selectedValue);
-  };
-
-  const handleMateria2Change = (e) => {
-    const selectedValue = e.target.value;
-    setMateriaOption2(selectedValue);
-  };
-
   //#endregion
 
   /*const exportarDatosGrafico = () => {
@@ -895,6 +871,31 @@ function Stadistic() {
     // Liberar la URL de objeto
     URL.revokeObjectURL(url);
   };
+
+  const exportToPDF = async () => {
+    // Obtener los datos de la tabla
+    const table = document.getElementById("RepoSoliPres");
+  
+    // Crear un nuevo documento PDF
+    const doc = new jsPDF();
+  
+    // Convertir la tabla a formato PDF
+    doc.autoTable({
+      html: table,
+    });
+  
+    // Obtener el contenedor del gráfico
+    const chartContainer = document.getElementById("Bar");
+  
+    // Convertir el gráfico en una imagen con html2canvas
+    const chartImage = await html2canvas(chartContainer);
+  
+    // Agregar la imagen del gráfico al documento PDF
+    doc.addImage(chartImage.toDataURL("image/png"), "PNG", 10, 80, 190, 100);
+  
+    // Guardar el documento PDF
+    doc.save("tabla.pdf");
+  };  
 
   return (
     <>
@@ -1118,6 +1119,11 @@ function Stadistic() {
             <div className="col-md-4 mt-2 text-wrap">
               <button className="btn btn-success me-1" onClick={exportToExcel}>
                 Exportar a Excel
+              </button>
+            </div>
+            <div className="col-md-4 mt-2 text-wrap">
+              <button className="btn btn-success me-1" onClick={exportToPDF}>
+                Exportar a PDF
               </button>
             </div>
             <div className="d-none col-md-4 mt-2 text-wrap">
