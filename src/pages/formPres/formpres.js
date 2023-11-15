@@ -341,6 +341,8 @@ const CompFormpres = () => {
       if (
         telorigen != "" &&
         telorigen != " " &&
+        idaudio != "" &&
+        idaudio != " " &&
         agente != "" &&
         agente != " " &&
         usobser != "" &&
@@ -463,7 +465,7 @@ const CompFormpres = () => {
         setIdcorreo("NO INDICA");
         setdehabIdCorreo("d-none");
         break;
-
+        
       case 2:
         setHiddentelorig("d-none");
         setdehabIdAudio("d-none");
