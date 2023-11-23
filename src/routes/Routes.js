@@ -7,6 +7,7 @@ import CompFormPrese from '../pages/formPres/CompoForm.js'
 import Dashboard from '../pages/dashboard/dashboard.js'
 import Home from '../pages/home/home.js'
 import Stadistic from "../pages/stadistic/stadistic.js";
+import Edit from "../pages/edit/edit.js";
 
 import { ProtectedRoute } from "../componentes/ProtectedRouter.jsx";
 
@@ -22,6 +23,7 @@ function Router() {
                     <Route replace path="/formpres" element={<CompFormPrese />} />
                     <Route replace path="/dashboard" element={<Dashboard />} />
                     <Route replace path="/stadistic" element={<Stadistic />} />
+                    <Route replace path="/edit" element={<Edit />} />
                     <Route replace path="*" element={<Navigate replace to="/" />} />
                 </Route>
             </Routes>
