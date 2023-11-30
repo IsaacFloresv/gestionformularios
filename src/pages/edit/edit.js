@@ -29,10 +29,10 @@ const CompFormpres = () => {
 
   useEffect(() => {
     getProvs();
-    getCants();
-    getDists();
+    getCantsEdit();
+    getDistsEdit();
     getMaterias();
-    getAsuntConsultado();
+    getAsuntConsultadoEdit();
     getBienes();
     EditReport();
   }, []);
@@ -120,7 +120,7 @@ const CompFormpres = () => {
   const [dehabiltel2, setdehabiltel2] = useState(false);
   const [dehabilem1, setdehabilem1] = useState(false);
   const [dehabilem2, setdehabilem2] = useState(false);
-  const [deshabProv, setdeshabProv] = useState(true);
+  const [deshabProv, setdeshabProv] = useState(false);
   const [deshabCant, setdeshabCant] = useState(true);
   const [deshabDist, setdeshabDist] = useState(true);
   const [dehabilndiC, setdehabilndiC] = useState(false);
@@ -129,7 +129,7 @@ const CompFormpres = () => {
   const [dehabilnombC, setdehabilnombC] = useState(false);
   const [dehabilapell1C, setdehabilapell1C] = useState(false);
   const [dehabilapell2C, setdehabilapell2C] = useState(false);
-  const [deshabMateria, setdeshabMateria] = useState(true);
+  const [deshabMateria, setdeshabMateria] = useState(false);
   const [deshabAConsultado, setdeshabAConsultado] = useState(true);
   const [deshabBien, setdeshabBien] = useState(true);
   const [checktel2, setCheckTel2] = useState(false);
@@ -203,6 +203,7 @@ const CompFormpres = () => {
   const [fgValidC, setfgValidC] = useState("");
   const [dhClValid, setdhClValid] = useState("");
   const [respClValid, setRespClValid] = useState("");
+  
   //#endregion UseState de Imputs
   //#endregion
 
@@ -356,6 +357,7 @@ Promise.race([axios.request(reqOptions), timeoutPromise])
       alert("Por favor, confirme que es humano...");
     }
   };
+  
   function limpiardatosA() {
     setndiA("");
     setnombA("");
@@ -1405,53 +1407,53 @@ const ValidarinputcedCEdit = (val) => {
     }
   };
 
-  const getCants = async () => {
+  const getCantsEdit = async () => {
     try {
       const res = await axios.get(URI + "cant/");
       setCant(res.data);
     } catch (error) {
       console.error("Error al obtener los datos de canton:", error);
-      getCants();
+      getCantsEdit();
     }
   };
 
-  const getDists = async () => {
+  const getDistsEdit = async () => {
     try {
       const res = await axios.get(URI + "dist/");
       setDist(res.data);
     } catch (error) {
       console.error("Error al obtener los datos de distrito:", error);
-      getDists();
+      getDistsEdit();
     }
   };
 
-  /*Mostrar los cantones por provincia
-  const getCants = async (v) => {
+  //Mostrar los cantones por provincia
+  const getCants = async (e) => {
     try {
-      const val = v?.target.value;
+      const val = e.target.options[e.target.selectedIndex].getAttribute('den');
       if (val != null) {
         setdeshabCant(false);
-
-        let index = v.target.selectedIndex;
-        let ubprov = v.target.options[index].text;
+        let index = e.target.selectedIndex;
+        let ubprov = e.target.options[index].text;
         setProvi(ubprov);
         setidProv(val);
         const res = await axios.get(URI + "cant/" + val);
         setCant(res.data);
+        console.log(cant);
       } else {
         setubCant("0");
         setubDist("0");
       }
     } catch (error) {
       console.error("Error al obtener los datos del cantón:", error);
-      getCants(v);
+      getCants(e);
     }
   };
 
   //Mostrar los distritos por canton
   const getDists = async (v) => {
     try {
-      const val = v?.target.value;
+      const val = v.target.options[v.target.selectedIndex].getAttribute('den');
       if (val != null) {
         v === 0 ? setdeshabDist(true) : setdeshabDist(false);
 
@@ -1472,7 +1474,7 @@ const ValidarinputcedCEdit = (val) => {
   //Metodo para definir el distrito
   const defubdist = (v) => {
     if (v.target.value != null) {
-      const val = v.target.value;
+      const val = v.target.options[v.target.selectedIndex].getAttribute('den');
       let index = v.target.selectedIndex;
       let ubdist = v.target.options[index].text;
       setDistr(ubdist);
@@ -1480,7 +1482,7 @@ const ValidarinputcedCEdit = (val) => {
       //getMaterias();
     }
   };
-*/
+
   const getMaterias = async () => {
     try {
       const res = await axios.get(URI + "mat/");
@@ -1491,7 +1493,7 @@ const ValidarinputcedCEdit = (val) => {
     }
   };
 
-  const getAsuntConsultado = async () => {
+  const getAsuntConsultadoEdit = async () => {
     try {
       const res = await axios.get(URI + "asu/");
       setAsunto(res.data);
@@ -1501,20 +1503,10 @@ const ValidarinputcedCEdit = (val) => {
     }
   };
 
-  const getBienes = async () => {
-    try {
-      const res = await axios.get(URI + "bie/");
-      setBien(res.data);
-    } catch (error) {
-      console.error("Se ha producido un error al obtener los bienes:", error);
-      getBienes();
-    }
-  };
-
-  /*Mostrar los asuntos por materia
+  //Mostrar los asuntos por materia
   const getAsuntConsultado = async (v) => {
     try {
-      const val = v?.target.value;
+      const val = v.target.options[v.target.selectedIndex].getAttribute('den');
 
       if (val != null) {
         setdeshabAConsultado(false);
@@ -1522,7 +1514,6 @@ const ValidarinputcedCEdit = (val) => {
         let index = v.target.selectedIndex;
         let Materia = v.target.options[index].text;
         setubMat(Materia);
-        setidMat(val);
 
         const res = await axios.get(URI + "asu/" + val);
         setAsunto(res.data);
@@ -1566,7 +1557,7 @@ const ValidarinputcedCEdit = (val) => {
       setidBie(v.value);
     }
   };
-  */
+  
   //#endregion
 
   //Solicitud a DB
@@ -1682,6 +1673,10 @@ const ValidarinputcedCEdit = (val) => {
             ) {
               setShowCompanyNameC(true);
               const nombreC = Comer?.business_name;
+              let nombreD = Comer?.fantasy_name;
+              if(nombreD=="NULL"){
+                nombreD="NO INDICA"
+              }
               setnombC(nombreC);
               ValidarinputNombC(nombreC, val);
               setlblinputNameC("Nombre de Empresa o institucion");
@@ -1690,6 +1685,7 @@ const ValidarinputcedCEdit = (val) => {
               setlblapell1C("Nombre de Fantasía (Opcional)");
               setapell1C("NO INDICA");
               setapell2C("NO INDICA");
+              setNfantasy(nombreD);
               setRsocial(nombreC);
               console.log("si no hay nombre de fantasia");
             } else if (
@@ -1725,6 +1721,7 @@ const ValidarinputcedCEdit = (val) => {
               setnombC(nombreH);
               setapell1C(nombreJ);
               setRsocial(nombreH);
+              setNfantasy(nombreJ);
               setapell2C("NO INDICA");
               ValidarinputNombC(nombreH, val);
               console.log("Existen ambos");
@@ -2202,7 +2199,7 @@ const ValidarinputcedCEdit = (val) => {
         </div>
         <div className="row my-3 ms-1">
           <div className="my-3">
-            <h3 className="clrTitle">Ubicación Geográfica</h3>
+          <h3 className="clrTitle">Ubicación Geográfica</h3>
           </div>
           <div className="col-md-4">
             <label htmlFor="inputprov" className="form-label">
@@ -2213,12 +2210,15 @@ const ValidarinputcedCEdit = (val) => {
               id="inputprov"
               className="form-select"
               disabled={deshabProv}
-              onChange={(e) => getCants(e)}
+              onFocus={() => {
+                document.getElementById('inputprov').selectedIndex = -1;
+              }}
+              onChange={(e) => {setubProv(e.target.value); getCants(e, e.target.options[e.target.selectedIndex].getAttribute('den'))}}
               value={ubProv}
               required
             >
               <option
-                defaultValue="DEFAULT"
+                defaultValue={"DEFAULT"}
                 value="0"
                 selected="selected"
                 disabled
@@ -2226,7 +2226,7 @@ const ValidarinputcedCEdit = (val) => {
                 Seleccione...
               </option>
               {prov?.map((prov) => (
-                <option key={prov.id_provincia} value={prov.ubProv}>
+                <option key={prov.id_provincia} value={prov.ubProv} den={prov.id_provincia}>
                   {" "}
                   {prov.name_provincia}{" "}
                 </option>
@@ -2245,7 +2245,10 @@ const ValidarinputcedCEdit = (val) => {
               id="inputcant"
               className="form-select"
               disabled={deshabCant}
-              onChange={(e) => getDists(e)}
+              onFocus={() => {
+                document.getElementById('inputcant').selectedIndex = -1;
+              }}
+              onChange={(e) => {setubCant(e.target.value); getDists(e, e.target.options[e.target.selectedIndex].getAttribute('den'))}}
               value={ubCant}
               required
             >
@@ -2257,9 +2260,9 @@ const ValidarinputcedCEdit = (val) => {
               >
                 Seleccione...
               </option>
-              {//idprov > 0 &&
+              {
                 cant?.map((cant) => (
-                  <option key={cant.ident} value={cant.ubCant}>
+                  <option key={cant.ident} value={cant.ubcant} den={cant.ident}>
                     {" "}
                     {cant.name_canton}{" "}
                   </option>
@@ -2278,7 +2281,7 @@ const ValidarinputcedCEdit = (val) => {
               id="inputdist"
               className="form-select"
               disabled={deshabDist}
-              //onChange={(e) => defubdist(e)}
+              onChange={(e) => {setubDist(e.target.value); defubdist(e, e.target.options[e.target.selectedIndex].getAttribute('den'))}}
               value={ubDist}
               required
             >
@@ -2290,9 +2293,9 @@ const ValidarinputcedCEdit = (val) => {
               >
                 Seleccione...
               </option>
-              {//idcant > 0 &&
+              {
                 dist?.map((dist) => (
-                  <option key={dist.ident} value={dist.ubDist}>
+                  <option key={dist.ident} value={dist.ubDist} den={dist.ident}>
                     {" "}
                     {dist.name_distrito}{" "}
                   </option>
@@ -2316,7 +2319,10 @@ const ValidarinputcedCEdit = (val) => {
               id="selectMateria"
               className="form-select"
               disabled={deshabMateria}
-              onChange={(e) => getAsuntConsultado(e)}
+              onFocus={() => {
+                document.getElementById('selectMateria').selectedIndex = -1;
+              }}
+              onChange={(e) => {setidMat(e.target.value); getAsuntConsultado(e, e.target.options[e.target.selectedIndex].getAttribute('den'))}}
               value={idMat}
               required
             >
@@ -2329,7 +2335,7 @@ const ValidarinputcedCEdit = (val) => {
                 Seleccione...
               </option>
               {materia?.map((materia) => (
-                <option key={materia.id} value={materia.idMat}>
+                <option key={materia.id} value={materia.idMat} den={materia.id_materia}>
                   {" "}
                   {materia.nomb_materia}{" "}
                 </option>
@@ -2348,7 +2354,7 @@ const ValidarinputcedCEdit = (val) => {
               id="selectAsuntoConsultado"
               className="form-select"
               disabled={deshabAConsultado}
-              //onChange={(e) => defAsunto(e)}
+              onChange={(e) => {setidAsu(e.target.value), setubAsu(e.target.value);}}
               value={idAsu}
               required
             >
@@ -2381,7 +2387,7 @@ const ValidarinputcedCEdit = (val) => {
               id="selectBien"
               className="form-select"
               disabled={deshabBien}
-              //onChange={(e) => defAsunto(e)}
+              onChange={(e) => {setidBie(e.target.value), setubBie(e.target.value);}}
               value={idBie}
               required
             >
