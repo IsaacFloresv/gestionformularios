@@ -963,6 +963,17 @@ function Stadistic() {
                   </a>
                 </li>
                 <li className="nav-item">
+                  <a
+                    href={"/dashboard"}
+                    id="btnenviar"
+                    type="button"
+                    className="nav-link"
+                    aria-current="page"
+                  >
+                    Listado de Formularios de Asesoria
+                  </a>
+                </li>
+                <li className="nav-item">
                   <Link
                     to={"/"}
                     id="btncerrar"
