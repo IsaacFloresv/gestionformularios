@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 
 const cookies = new Cookies();
 var nReporte;
+const meicimg = "logo_meic.jpg";
 
 const URI = "https://fwmback-production.up.railway.app/";
 //const URIEMAIL = "https://sndmail-production-cdb6.up.railway.app/sendemail";
@@ -1827,9 +1828,109 @@ const ValidarinputcedCEdit = (val) => {
 
   return (
     <div className="container bg-white mx-2 my-4 fw-semibold mx-auto max-w-6x1 px-1 sm:px-5 lg:px-7">
+      <nav className="navbar bg-body-white fixed-top position-relative shadow">
+        <div className="container" style={{ maxWidth: "1200px" }}>
+          <img
+            src={meicimg}
+            alt="MEIC"
+            width="140"
+            height="55"
+            className="d-flex justify-content-start"
+          />
+          <p className="fs-2 fw-bolder text-center clrTitle">
+            EDICION DE FORMULARIOS MEIC
+          </p>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasNavbar"
+            aria-controls="offcanvasNavbar"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          <div
+            className="offcanvas offcanvas-end"
+            tabindex="-1"
+            id="offcanvasNavbar"
+            aria-labelledby="offcanvasNavbarLabel"
+          >
+            <div className="offcanvas-header">
+              <h5 className="offcanvas-title" id="offcanvasNavbarLabel">
+                Opciones
+              </h5>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div className="offcanvas-body">
+              <ul className="navbar-nav justify-content-end flex-grow-1 pe-3">
+                <li className="nav-item">
+                  <Link
+                    to={"/home"}
+                    id="btnenviar"
+                    type="buttom"
+                    className="nav-link"
+                    aria-current="page"
+                  >
+                    Inicio
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <a
+                    href={"/formpres"}
+                    id="btnenviar"
+                    className="nav-link"
+                    aria-current="page"
+                  >
+                    Formularios de Asesoria
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    href={"/dashboard"}
+                    id="btnenviar"
+                    type="button"
+                    className="nav-link"
+                    aria-current="page"
+                  >
+                    Listado de Formularios
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    href={"/stadistic"}
+                    id="btnenviar"
+                    type="button"
+                    className="nav-link"
+                    aria-current="page"
+                  >
+                    Estadisticas
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to={"/"}
+                    id="btncerrar"
+                    type="button"
+                    className="nav-link"
+                    onClick={() => CerrarSession()}
+                    aria-current="page"
+                  >
+                    Salir
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+          </div>
+      </nav>
       <form
         id="formulario"
-        className="g-3 me-3 needs-validation"
+        className="g-3 me-3 needs-validation mt-5"
         noValidate
         action="#"
         required
@@ -2589,16 +2690,18 @@ const ValidarinputcedCEdit = (val) => {
               Escalar
             </button>
           </div>
-          <div className="col-md-auto">
-            <button
-              id="btnenviar"
-              type="submit"
-              className="p-3 m-3 btn btn-primary fw-bolder"
-              onClick={(e) => validarbtnSubmit(e)}
-              disabled={dehabilSubmit}
-            >
-              Guardar Registro
-            </button>
+          <div className="row justify-content-center">
+            <div className="col-md-auto">
+              <button
+               id="btnenviar"
+               type="submit"
+               className="p-3 m-3 btn btn-primary fw-bolder"
+               onClick={(e) => validarbtnSubmit(e)}
+               disabled={dehabilSubmit}
+              >
+               Guardar Registro
+              </button>
+            </div>
           </div>
         </div>
       </form>
