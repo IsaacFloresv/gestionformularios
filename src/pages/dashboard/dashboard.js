@@ -613,6 +613,42 @@ const obtencionFiltroAgente = (report) => {
       reporte["Respuesta Enviada"] = reporte.respe;
       reporte["ID Audio"] = reporte.id_audio;
 
+            // Eliminacion de las columnas originales
+      delete reporte.id_report;
+      delete reporte.id_agente;
+      delete reporte.fchareg;
+      delete reporte.status;
+      delete reporte.origen_r;
+      delete reporte.usuario_s;
+      delete reporte.us_obser;
+      delete reporte.tdia;
+      delete reporte.ndia;
+      delete reporte.nomba;
+      delete reporte.apell1a;
+      delete reporte.apell2a;
+      delete reporte.email;
+      delete reporte.email2;
+      delete reporte.tel;
+      delete reporte.tel2;
+      delete reporte.provi;
+      delete reporte.canto;
+      delete reporte.distr;
+      delete reporte.materia;
+      delete reporte.asunto;
+      delete reporte.bien;
+      delete reporte.tdic;
+      delete reporte.ndic;
+      delete reporte.razon_social;
+      delete reporte.nombre_fantasia;
+      delete reporte.desch;
+      delete reporte.respe;
+      delete reporte.id;
+      delete reporte.fchacomplet;
+      delete reporte.tel_origen;
+      delete reporte.fchahech;
+      delete reporte.fchagar;
+      delete reporte.id_audio;
+      delete reporte.id_correo;
 
     });
 
