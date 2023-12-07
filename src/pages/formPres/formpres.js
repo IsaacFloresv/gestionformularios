@@ -242,7 +242,6 @@ const CompFormpres = () => {
   const [fgValidC, setfgValidC] = useState("");
   const [dhClValid, setdhClValid] = useState("");
   const [respClValid, setRespClValid] = useState("");
-  const [AudisValid, setAudIsValid] = useState("");
   //#endregion UseState de Imputs
   //#endregion
 
@@ -272,7 +271,6 @@ const CompFormpres = () => {
     
 
     let fchareg = fechaFormateada;
-    let fchareg = fecha;
     setFchareg(fecha);
 
     if (v === 1) {
@@ -363,8 +361,6 @@ const CompFormpres = () => {
       if (
         telorigen != "" &&
         telorigen != " " &&
-        idaudio != "" &&
-        idaudio != " " &&
         agente != "" &&
         agente != " " &&
         usobser != "" &&
@@ -487,7 +483,7 @@ const CompFormpres = () => {
         setIdcorreo("NO INDICA");
         setdehabIdCorreo("d-none");
         break;
-        
+
       case 2:
         setHiddentelorig("d-none");
         setdehabIdAudio("d-none");
@@ -761,18 +757,6 @@ const CompFormpres = () => {
       } else if (Ub === 2) {
         setemClValid2("is-invalid");
       }
-    }
-  };
-
-  //Validacion Audio Origen
-  const ValidarinputAudioOrigen = (e) => {
-    const value = e.target.value;
-    setIdaudio(value);
-
-    if (value.length === 16) {
-      setAudIsValid("is-valid");
-    } else {
-      setAudIsValid("is-invalid");
     }
   };
 
@@ -1660,10 +1644,12 @@ const CompFormpres = () => {
               <input
                 name="idAudio"
                 type="text"
-                className={`form-control ${AudisValid}`}
+                className={`form-control`}
                 id="inputidaudio"
                 value={idaudio}
-                onChange={ValidarinputAudioOrigen}
+                onChange={(e) => {
+                  setIdaudio(e.target.value);
+                }}
                 required
               />
             </div>
