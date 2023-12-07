@@ -269,9 +269,9 @@ const CompFormpres = () => {
     // Formatea la fecha en el formato deseado: dd/mm/yyyy, hh:mm:ss
     let fechaFormateada = `${dia}/${mes}/${año}, ${horas}:${minutos}:${segundos}`;
     
-
+    console.log(fechaFormateada);
     let fchareg = fechaFormateada;
-    setFchareg(fecha);
+    setFchareg(fechaFormateada);
 
     if (v === 1) {
       console.log("EnviarDatos se llama de forma reciproca");
