@@ -249,7 +249,29 @@ const CompFormpres = () => {
   //#region Validacion de inputs
 
   const EnviarDatos = async (v) => {
-    let fecha = new Date().toLocaleString();
+    // Obtiene la fecha actual
+    let fechaActual = new Date();
+    
+    // Obtiene los componentes de la fecha
+    let dia = fechaActual.getDate();
+    let mes = fechaActual.getMonth() + 1; // Se suma 1 porque los meses van de 0 a 11
+    let año = fechaActual.getFullYear();
+    let horas = fechaActual.getHours();
+    let minutos = fechaActual.getMinutes();
+    let segundos = fechaActual.getSeconds();
+    
+    // Formatea los componentes de la fecha si es necesario (elimina ceros a la izquierda si son menores a 10)
+    mes = mes < 10 ? mes : mes;
+    dia = dia < 10 ? dia : dia;
+    horas = horas < 10 ? horas : horas;
+    minutos = minutos < 10 ? minutos : minutos;
+    segundos = segundos < 10 ? segundos : segundos;
+    
+    // Formatea la fecha en el formato deseado: dd/mm/yyyy, hh:mm:ss
+    let fechaFormateada = `${dia}/${mes}/${año}, ${horas}:${minutos}:${segundos}`;
+    
+
+    let fchareg = fechaFormateada;
     let fchareg = fecha;
     setFchareg(fecha);
 
